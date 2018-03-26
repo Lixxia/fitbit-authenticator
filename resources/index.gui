@@ -1,0 +1,52 @@
+<svg id="display" viewport-fill="lightgray">
+
+  <!-- Define a reusable tile to display a token -->
+  <symbol id="tile-token" focusable="false" pointer-events="none" system-events="all">
+    <rect id="container" height="100%-5" width="100%" fill="white" opacity="0.8"/>
+  
+    <text id="totp" font-size="50" x="50%" y="50" fill="lightskyblue" text-anchor="middle">Token Display</text>
+    <text id="totp-name" font-size="20" x="50%" y="70" fill="gray" text-anchor="middle">example@localhost.com</text>
+    <rect id="touch-me" pointer-events="all" x="0" y="0" width="100%" height="100%-2" opacity="0"/>
+
+<!--     <text id="time-left" x="100%-38" y="40" height="47"width="80" fill="white">O</text> -->
+
+<!--     <rect id="tile-divider-bottom" class="tile-divider-bottom" height="5"/> -->
+  </symbol>
+  
+  <use id="tokenList" href="#tile-list" height="100%" width="100%">
+    <var id="reorder-enabled" value="0"/>
+    <var id="separator-height-bottom" value="2"/>
+
+    <use id="token-0" href="#tile-list-item" class="tile-list-item">
+      <use href="#tile-token" />
+    </use>
+    <use id="token-1" href="#tile-list-item" class="tile-list-item">
+      <use href="#tile-token" />
+    </use>
+    <use id="token-2" href="#tile-list-item" class="tile-list-item">
+      <use href="#tile-token" />
+    </use>
+    <use id="token-3" href="#tile-list-item" class="tile-list-item">
+      <use href="#tile-token" />
+    </use>
+    <use id="token-4" href="#tile-list-item" class="tile-list-item">
+      <use href="#tile-token" />
+    </use>
+    <use id="token-5" href="#tile-list-item" class="tile-list-item">
+      <use href="#tile-token" />
+    </use>
+  </use>
+  
+  <!--   Progress Background -->
+  <line id="prog1-bg" x1="0" y1="0" x2="100%" y2="0" fill="darkblue" stroke-width="10" />
+  <line id="prog2-bg" x1="100%" y1="0" x2="100%" y2="100%" fill="darkblue" stroke-width="10" />
+  <line id="prog3-bg" x1="100%" y1="100%" x2="0" y2="100%" fill="darkblue" stroke-width="10" />
+  <line id="prog4-bg" x1="0" y1="100%" x2="0" y2="0" fill="darkblue" stroke-width="10" />
+  
+  <!--   Progress Bars -->
+  <line id="prog1" x1="0" y1="0" x2="0" y2="0" fill="blue" stroke-width="10" />
+  <line id="prog2" x1="100%" y1="0" x2="100%" y2="0" fill="blue" stroke-width="10" />
+  <line id="prog3" x1="100%" y1="100%" x2="100%" y2="100%" fill="blue" stroke-width="10" />
+  <line id="prog4" x1="0" y1="100%" x2="0" y2="100%" fill="blue" stroke-width="10" />
+  
+</svg>

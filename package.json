@@ -1,0 +1,18 @@
+{
+  "fitbit": {
+    "appUUID": "ff58cce2-1f9d-4a2f-917d-3cb70c11b542",
+    "appType": "app",
+    "appDisplayName": "Authenticator",
+    "iconFile": "resources/icon.png",
+    "wipeColor": "#8bc34a",
+    "requestedPermissions": [],
+    "buildTargets": [
+      "meson"
+    ],
+    "i18n": {
+      "en": {
+        "name": "Authenticator"
+      }
+    }
+  }
+}
