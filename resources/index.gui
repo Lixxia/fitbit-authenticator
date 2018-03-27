@@ -2,16 +2,18 @@
 
   <!-- Define a reusable tile to display a token -->
   <symbol id="tile-token" focusable="false" pointer-events="none" system-events="all">
-    <rect id="container" height="100%-5" width="100%" fill="white" opacity="0.8"/>
+    <rect id="container" />
   
-    <text id="totp" font-size="50" x="50%" y="50" fill="lightskyblue" text-anchor="middle">Token Display</text>
-    <text id="totp-name" font-size="20" x="50%" y="70" fill="gray" text-anchor="middle">example@localhost.com</text>
+    <text id="totp">Token Display</text>
+    <text id="totp-name">example@localhost.com</text>
     <rect id="touch-me" pointer-events="all" x="0" y="0" width="100%" height="100%-2" opacity="0"/>
 
 <!--     <text id="time-left" x="100%-38" y="40" height="47"width="80" fill="white">O</text> -->
 
 <!--     <rect id="tile-divider-bottom" class="tile-divider-bottom" height="5"/> -->
   </symbol>
+  
+  <textarea id="status" class="status"></textarea>
   
   <use id="tokenList" href="#tile-list" height="100%" width="100%">
     <var id="reorder-enabled" value="0"/>
@@ -35,18 +37,30 @@
     <use id="token-5" href="#tile-list-item" class="tile-list-item">
       <use href="#tile-token" />
     </use>
+    <use id="token-6" href="#tile-list-item" class="tile-list-item">
+      <use href="#tile-token" />
+    </use>
+    <use id="token-7" href="#tile-list-item" class="tile-list-item">
+      <use href="#tile-token" />
+    </use>
+    <use id="token-8" href="#tile-list-item" class="tile-list-item">
+      <use href="#tile-token" />
+    </use>
+    <use id="token-9" href="#tile-list-item" class="tile-list-item">
+      <use href="#tile-token" />
+    </use>
   </use>
   
   <!--   Progress Background -->
-  <line id="prog1-bg" x1="0" y1="0" x2="100%" y2="0" fill="darkblue" stroke-width="10" />
-  <line id="prog2-bg" x1="100%" y1="0" x2="100%" y2="100%" fill="darkblue" stroke-width="10" />
-  <line id="prog3-bg" x1="100%" y1="100%" x2="0" y2="100%" fill="darkblue" stroke-width="10" />
-  <line id="prog4-bg" x1="0" y1="100%" x2="0" y2="0" fill="darkblue" stroke-width="10" />
+  <line id="prog1-bg" class="progress dim" />
+  <line id="prog2-bg" class="progress dim" />
+  <line id="prog3-bg" class="progress dim" />
+  <line id="prog4-bg" class="progress dim" />
   
   <!--   Progress Bars -->
-  <line id="prog1" x1="0" y1="0" x2="0" y2="0" fill="blue" stroke-width="10" />
-  <line id="prog2" x1="100%" y1="0" x2="100%" y2="0" fill="blue" stroke-width="10" />
-  <line id="prog3" x1="100%" y1="100%" x2="100%" y2="100%" fill="blue" stroke-width="10" />
-  <line id="prog4" x1="0" y1="100%" x2="0" y2="100%" fill="blue" stroke-width="10" />
+  <line id="prog1" class="progress" />
+  <line id="prog2" class="progress" />
+  <line id="prog3" class="progress" />
+  <line id="prog4" class="progress" />
   
 </svg>

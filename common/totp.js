@@ -11,7 +11,7 @@ export function TOTP() {
     };
 
     var leftpad = function(s, l, p) {
-        if(l + 1 >= s.length) {
+        if (l + 1 >= s.length) {
             s = Array(l + 1 - s.length).join(p) + s;
         }
         return s;
@@ -21,11 +21,11 @@ export function TOTP() {
         var base32chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
         var bits = "";
         var hex = "";
-        for(var i = 0; i < base32.length; i++) {
+        for (var i=0; i<base32.length; i++) {
             var val = base32chars.indexOf(base32.charAt(i).toUpperCase());
             bits += leftpad(val.toString(2), 5, '0');
         }
-        for(var i = 0; i + 4 <= bits.length; i+=4) {
+        for (var i=0; i+4<=bits.length; i+=4) {
             var chunk = bits.substr(i, 4);
             hex = hex + parseInt(chunk, 2).toString(16) ;
         }

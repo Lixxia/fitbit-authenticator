@@ -4,7 +4,7 @@
     "appType": "app",
     "appDisplayName": "Authenticator",
     "iconFile": "resources/icon.png",
-    "wipeColor": "#8bc34a",
+    "wipeColor": "#607d8b",
     "requestedPermissions": [],
     "buildTargets": [
       "meson"

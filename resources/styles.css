@@ -1,12 +1,19 @@
-.item-header     { x: 0; y: 0; width: 100%; height: 25 }
-.item            { x: 0; y: 0; width: 100%; height: 30%; }
-.item-footer     { x: 0; y: 0; width: 100%; height: 20; }
+.item-header { x: 0; y: 0; width: 100%; height: 25 }
+.item { x: 0; y: 0; width: 100%; height: 30%; }
+.item-footer { x: 0; y: 0; width: 100%; height: 20; }
+.tile-list-item { height: 88; }
 
-.tile-list-item {
-  height: 88;
-}
+#prog1 { x1: 0; y1: 0; x2: 0; y2: 0; }
+#prog2 { x1: 100%; y1: 0; x2: 100%; y2: 0; }
+#prog3 { x1: 100%; y1: 100%; x2: 100%; y2: 100%; }
+#prog4 { x1: 0; y1: 100%; x2: 0; y2: 100%; }
 
-.tile-divider-bottom {
+#prog1-bg { x1: 0; y1: 0; x2: 100%; y2: 0; }
+#prog2-bg { x1: 100%; y1: 0; x2: 100%; y2: 100%; }
+#prog3-bg { x1: 100%; y1: 100%; x2: 0; y2: 100%; }
+#prog4-bg { x1: 0; y1: 100%; x2: 0; y2: 0; }
+
+#tile-divider-bottom {
   x: 0;
   y: 100%-20;
   width: 90%;
@@ -14,13 +21,47 @@
   fill: #A0A0A0;
 }
 
-.container {
-  width: 90%;
-  height: 90%;
-  fill: #A0A0A0;
+#totp {
+  font-size: 50;
+  x: 50%;
+  y: 50%;
+  fill: lightskyblue; 
+  text-anchor: middle;
 }
 
-#tile-list {
-  height: 90%;
-  width: 90%;
+#totp-name {
+  font-size: 20;
+  x: 50%;
+  y: 70;
+  fill: gray;
+  text-anchor: middle;
 }
+
+#container {
+  height: 100%-5;
+  width: 100%;
+  fill: white;
+}
+
+.status {
+  text-anchor: middle;
+  display-align: center;
+  x: 5%;
+  y: 5%;
+  width: 90%;
+  height: 90%;
+  text-length:512;
+  font-size: 32;
+  fill: black;
+}
+
+.progress {
+  fill: blue;
+  stroke-width: 10;
+}
+
+.dim {
+  fill: black;
+}
+
+

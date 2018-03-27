@@ -1,8 +1,7 @@
 import * as messaging from "messaging";
-import { settingsStorage } from "settings";
-import { TOKEN_LIST } from "../common/globals.js";
+import {settingsStorage} from "settings";
+import {TOKEN_LIST} from "../common/globals.js";
 import {TOTP} from "../common/totp.js";
-
 
 // Message socket opens
 messaging.peerSocket.onopen = () => {
@@ -16,16 +15,16 @@ messaging.peerSocket.onclose = () => {
 };
 
 function validateToken(token) {
-  var totpObj = new TOTP();
-  try {
-    totpObj.getOTP(token);
-  }
-  catch (err) {
-    console.log("Invalid token tested.");
-    return false;
-  }
+  let totpTest = new TOTP();
+  let result = true;
   
-  return true;
+  try {
+    totpTest.getOTP(token);
+  } catch (e) {
+    console.log("Token was invalid");
+    result = false;
+  }
+  return result;
 } 
   
 function checkUniqueNames(newArray) {
@@ -71,8 +70,7 @@ settingsStorage.onchange = evt => {
   
   let newVal = JSON.parse(evt.newValue);
   var rejectNames = checkUniqueNames(JSON.parse(evt.newValue));
-
-  if (evt.newValue.length < evt.oldValue.length) {
+  if (evt.oldValue !== null && evt.newValue.length < evt.oldValue.length) {
     let oldVal = JSON.parse(evt.oldValue);
     console.log("Value is to be deleted");
     let deleteArr = {}
@@ -104,18 +102,15 @@ settingsStorage.onchange = evt => {
     console.log("delteArr " + JSON.stringify(deleteArr));
     sendVal(deleteArr);
     return;
-  }
-  else if (JSON.stringify(newVal[newVal.length-1]["name"]).indexOf(':') === -1) {
+  } else if (JSON.stringify(newVal[newVal.length-1]["name"]).indexOf(':') === -1) {
     console.log("Delimeter not found, removing latest user submission.");
     revokeLast(TOKEN_LIST, tokens);
     return;
-  }
-  else if ( rejectNames.length > 0 ) {
+  } else if ( rejectNames.length > 0 ) {
     console.log("Item already exists, removing latest user submission.");
     revokeLast(TOKEN_LIST, tokens);
     return;
-  }
-  else if ( ! validateToken(JSON.stringify(newVal[newVal.length-1]["name"].split(":")[1]))) {
+  } else if ( ! validateToken(newVal[newVal.length-1]["name"].split(":")[1])) {
     console.log("Invalid token, removing latest user submission.");
     revokeLast(TOKEN_LIST, tokens);
     return;

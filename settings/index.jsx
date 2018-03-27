@@ -4,7 +4,7 @@ function mySettings(props) {
       <AdditiveList
         title="Tokens"
         settingsKey="token_list"
-        maxItems="5"
+        maxItems="10"
         description="Description"
         addAction={
           <TextInput
