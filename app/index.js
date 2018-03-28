@@ -66,7 +66,6 @@ messaging.peerSocket.onmessage = evt => {
   updateOtp();
 };
 
-
 // Message socket opens
 messaging.peerSocket.onopen = () => {
   console.log("App Socket Open");
@@ -90,6 +89,7 @@ function updateOtp() {
   // Iterate over possible display values, hide if nothing found
   for (let i=0; i<TOKEN_NUM; i++) {
     let tile = TILES[i];
+    
     if (!tile) {
       continue;
     }
@@ -112,39 +112,19 @@ function updateOtp() {
 
 function timer() {
   // Update tokens every 30s
-  var epoch = Math.round(new Date().getTime() / 1000.0);
-  var countDown = 30 - (epoch % 30);
+  let epoch = Math.round(new Date().getTime() / 1000.0);
+  let countDown = 30 - (epoch % 30);
   if (epoch % 30 == 0) updateOtp();
-  // document.getElementById("time-left").text = countDown;
+  document.getElementById("time-left").text = countDown;
 
-  // Starts corresponding section of progress bar based on interval
+  // Reset countdown clock at 30/0 seconds
   if (countDown === 30) {
     document.getElementById("prog1").x2 = 0;
     document.getElementById("prog2").y2 = 0;
     document.getElementById("prog3").x2 = WIDTH;
     document.getElementById("prog4").y2 = HEIGHT;
-    document.getElementById("prog2").style.visibility = "hidden";
-    document.getElementById("prog3").style.visibility = "hidden";
-    document.getElementById("prog4").style.visibility = "hidden";
-    progress("prog1");
-  } else if (countDown === 23) {
-    document.getElementById("prog1").x2 = WIDTH;
-    document.getElementById("prog2").y2 = 0;
-    document.getElementById("prog2").style.visibility = "visible";
-    progress("prog2");
-  } else if (countDown === 16 ) {
-    document.getElementById("prog1").x2 = WIDTH;
-    document.getElementById("prog2").y2 = HEIGHT;
-    document.getElementById("prog3").x2 = WIDTH;
-    document.getElementById("prog3").style.visibility = "visible";
-    progress("prog3");
-  } else if (countDown === 9 ) {
-    document.getElementById("prog1").x2 = WIDTH;
-    document.getElementById("prog2").y2 = HEIGHT;
-    document.getElementById("prog3").x2 = 0;
-    document.getElementById("prog4").y2 = HEIGHT;
-    document.getElementById("prog4").style.visibility = "visible";
-    progress("prog4");
+    document.getElementById("prog4").style.visibility = "hidden"; //prog4 may repeat animation if lagged
+    progress("prog1"); 
   }
 
 }
@@ -155,7 +135,23 @@ function resumeTimer() {
   let catchUp = (epoch % 30) * 43;
   let i=1;
   while (catchUp > 0) {
-    if (i === 1) {
+    console.log("Catchup " + catchUp);
+    if (i === 1 && catchUp >= WIDTH) {
+      document.getElementById("prog" + i).x2 = WIDTH;
+    } else if (i === 2 && catchUp >= HEIGHT) {
+      document.getElementById("prog1").x2 = WIDTH;
+      document.getElementById("prog" + i).y2 = HEIGHT;
+    } else if (i === 3 && catchUp >= WIDTH) {
+      document.getElementById("prog1").x2 = WIDTH;
+      document.getElementById("prog2").y2 = HEIGHT;
+      document.getElementById("prog" + i).x2 = WIDTH;
+    } else if (i === 4 && catchUp >= HEIGHT) {
+      document.getElementById("prog4").style.visibility = "visible";
+      document.getElementById("prog1").x2 = WIDTH;
+      document.getElementById("prog2").y2 = HEIGHT;
+      document.getElementById("prog3").x2 = 0;
+      document.getElementById("prog" + i).y2 = HEIGHT;
+    } else if (i === 1) {
       document.getElementById("prog" + i).x2 = catchUp;
     } else if (i === 2) {
       document.getElementById("prog1").x2 = WIDTH;
@@ -165,39 +161,50 @@ function resumeTimer() {
       document.getElementById("prog2").y2 = HEIGHT;
       document.getElementById("prog" + i).x2 = catchUp;
     } else if (i === 4) {
+      document.getElementById("prog4").style.visibility = "visible";
       document.getElementById("prog1").x2 = WIDTH;
       document.getElementById("prog2").y2 = HEIGHT;
       document.getElementById("prog3").x2 = 0;
       document.getElementById("prog" + i).y2 = catchUp;
     }
-    progress("prog" + i);
+    if (catchUp < 300) {
+      progress("prog" + i);
+    }
     i++;
-    catchUp -= 300;
+    catchUp -= WIDTH;
   }
 }
 
 // Generate smooth JS animation for progress bar
 function progress(element) {
-  var bar = document.getElementById(element);
-  var id = setInterval(frame, 23);
-  var updateInterval = 1;
+  let bar = document.getElementById(element);
+  let id = setInterval(frame, 23);
+  let updateInterval = 1;
+  
   function frame() {
     if (element === "prog1") {
-      if (bar.x2 >= 300) {
+      if (bar.x2 >= WIDTH) {
         clearInterval(id);
+        document.getElementById("prog2").y2 = 0;
+        progress("prog2");
       } else {
         bar.x2 += updateInterval;
       }
     }
     else if (element === "prog2") {
-      if (bar.y2 >= 300) {
+      if (bar.y2 >= HEIGHT) {
         clearInterval(id);
+        document.getElementById("prog3").x2 = WIDTH;
+        progress("prog3");
       } else {
         bar.y2 += updateInterval;
       }
-    } else if (element === "prog3") {
+    } else if (element === "prog3") {      
       if (bar.x2 <= 0) {
         clearInterval(id);
+        document.getElementById("prog4").y2 = HEIGHT;
+        document.getElementById("prog4").style.visibility = "visible";
+        progress("prog4");
       } else {
         bar.x2 -= updateInterval;
       }

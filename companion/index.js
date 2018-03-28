@@ -15,16 +15,17 @@ messaging.peerSocket.onclose = () => {
 };
 
 function validateToken(token) {
+  if (! token) return false;
+  
   let totpTest = new TOTP();
-  let result = true;
   
   try {
     totpTest.getOTP(token);
   } catch (e) {
-    console.log("Token was invalid");
-    result = false;
+    console.log("Token was invalid, following error given: " + e);
+    return false;
   }
-  return result;
+  return true;
 } 
   
 function checkUniqueNames(newArray) {
@@ -67,7 +68,6 @@ settingsStorage.onchange = evt => {
     console.log("Settings value could not be decoded")
     // return;
   }
-  
   let newVal = JSON.parse(evt.newValue);
   var rejectNames = checkUniqueNames(JSON.parse(evt.newValue));
   if (evt.oldValue !== null && evt.newValue.length < evt.oldValue.length) {
@@ -102,7 +102,11 @@ settingsStorage.onchange = evt => {
     console.log("delteArr " + JSON.stringify(deleteArr));
     sendVal(deleteArr);
     return;
-  } else if (JSON.stringify(newVal[newVal.length-1]["name"]).indexOf(':') === -1) {
+  } else if ( ! newVal[newVal.length-1]["name"].split(":")[0]) {
+    console.log("Name cannot be empty.");
+    revokeLast(TOKEN_LIST, tokens);
+    return;
+  } else if (newVal[newVal.length-1]["name"].indexOf(':') === -1) {
     console.log("Delimeter not found, removing latest user submission.");
     revokeLast(TOKEN_LIST, tokens);
     return;
@@ -120,9 +124,6 @@ settingsStorage.onchange = evt => {
   for (let i=0; i<tokens.length;i++) {
     tokens[i]["token"] = tokens[i]["name"].split(":")[1];
     tokens[i]["name"] = tokens[i]["name"].split(":")[0];
-    // console.log("unstring" + tokens[i]["name"].split(":")[1]);
-    // console.log("name" + tokens[i]["name"] + " ->" + JSON.stringify(tokens[i]["name"].split(":")[0]));
-    // console.log("token" + tokens[i]["token"] + " ->" + JSON.stringify(tokens[i]["token"]));
   }
   //console.log("decode?" + base32_decode(tokens[0]["token"]))
 
