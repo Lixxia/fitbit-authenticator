@@ -5,8 +5,10 @@ import {TOTP} from "../common/totp.js";
 import {TOKEN_NUM} from "../common/globals.js";
 import { me as device } from "device";
 
+// Progress bar constants
 const WIDTH = device.screen.width;
 const HEIGHT = device.screen.height;
+const PROG = ['0','1','2','3'].map(num => document.getElementById(`prog${num}`));
 
 // Testing touch, highlight on tap?
 // let list = document.getElementById("tokenList");
@@ -119,12 +121,12 @@ function timer() {
 
   // Reset countdown clock at 30/0 seconds
   if (countDown === 30) {
-    document.getElementById("prog1").x2 = 0;
-    document.getElementById("prog2").y2 = 0;
-    document.getElementById("prog3").x2 = WIDTH;
-    document.getElementById("prog4").y2 = HEIGHT;
-    document.getElementById("prog4").style.visibility = "hidden"; //prog4 may repeat animation if lagged
-    progress("prog1"); 
+    PROG[0].x2 = 0;
+    PROG[1].y2 = 0;
+    PROG[2].x2 = WIDTH;
+    PROG[3].y2 = HEIGHT;
+    PROG[3].style.visibility = "hidden"; //last bar may repeat animation if lagged
+    progress(PROG[0]); 
   }
 
 }
@@ -133,82 +135,65 @@ function timer() {
 function resumeTimer() {
   let epoch = Math.round(new Date().getTime() / 1000.0);
   let catchUp = (epoch % 30) * 43;
-  let i=1;
+  let i=0;
+
   while (catchUp > 0) {
-    console.log("Catchup " + catchUp);
-    if (i === 1 && catchUp >= WIDTH) {
-      document.getElementById("prog" + i).x2 = WIDTH;
-    } else if (i === 2 && catchUp >= HEIGHT) {
-      document.getElementById("prog1").x2 = WIDTH;
-      document.getElementById("prog" + i).y2 = HEIGHT;
-    } else if (i === 3 && catchUp >= WIDTH) {
-      document.getElementById("prog1").x2 = WIDTH;
-      document.getElementById("prog2").y2 = HEIGHT;
-      document.getElementById("prog" + i).x2 = WIDTH;
-    } else if (i === 4 && catchUp >= HEIGHT) {
-      document.getElementById("prog4").style.visibility = "visible";
-      document.getElementById("prog1").x2 = WIDTH;
-      document.getElementById("prog2").y2 = HEIGHT;
-      document.getElementById("prog3").x2 = 0;
-      document.getElementById("prog" + i).y2 = HEIGHT;
+    if (i === 0) {
+      PROG[0].x2 = Math.min(WIDTH,catchUp);
     } else if (i === 1) {
-      document.getElementById("prog" + i).x2 = catchUp;
+      PROG[0].x2 = WIDTH;
+      PROG[1].y2 = Math.min(HEIGHT,catchUp);
     } else if (i === 2) {
-      document.getElementById("prog1").x2 = WIDTH;
-      document.getElementById("prog" + i).y2 = catchUp;
+      PROG[0].x2 = WIDTH;
+      PROG[1].y2 = HEIGHT;
+      PROG[2].x2 = Math.min(WIDTH,WIDTH - catchUp);
     } else if (i === 3) {
-      document.getElementById("prog1").x2 = WIDTH;
-      document.getElementById("prog2").y2 = HEIGHT;
-      document.getElementById("prog" + i).x2 = catchUp;
-    } else if (i === 4) {
-      document.getElementById("prog4").style.visibility = "visible";
-      document.getElementById("prog1").x2 = WIDTH;
-      document.getElementById("prog2").y2 = HEIGHT;
-      document.getElementById("prog3").x2 = 0;
-      document.getElementById("prog" + i).y2 = catchUp;
-    }
-    if (catchUp < 300) {
-      progress("prog" + i);
+      PROG[0].x2 = WIDTH;
+      PROG[1].y2 = HEIGHT;
+      PROG[2].x2 = 0;
+      PROG[3].style.visibility = "visible";
+      PROG[3].y2 = Math.min(HEIGHT,HEIGHT - catchUp);
     }
     i++;
     catchUp -= WIDTH;
-  }
+  } 
+  console.log("Calling prog" + (i-1));
+  progress(PROG[i-1]);
 }
 
 // Generate smooth JS animation for progress bar
-function progress(element) {
-  let bar = document.getElementById(element);
-  let id = setInterval(frame, 23);
+function progress(bar) {
+  let id = setInterval(frame, 24);
   let updateInterval = 1;
-  
+
   function frame() {
-    if (element === "prog1") {
+    if (bar === PROG[0]) {
       if (bar.x2 >= WIDTH) {
         clearInterval(id);
-        document.getElementById("prog2").y2 = 0;
-        progress("prog2");
+        PROG[1].y2 = 0;
+        progress(PROG[1]);
       } else {
         bar.x2 += updateInterval;
       }
     }
-    else if (element === "prog2") {
+    else if (bar === PROG[1]) {
       if (bar.y2 >= HEIGHT) {
         clearInterval(id);
-        document.getElementById("prog3").x2 = WIDTH;
-        progress("prog3");
+        PROG[2].x2 = WIDTH;
+        progress(PROG[2]);
       } else {
         bar.y2 += updateInterval;
       }
-    } else if (element === "prog3") {      
+    } else if (bar === PROG[2]) {
       if (bar.x2 <= 0) {
         clearInterval(id);
-        document.getElementById("prog4").y2 = HEIGHT;
-        document.getElementById("prog4").style.visibility = "visible";
-        progress("prog4");
+        PROG[3].y2 = HEIGHT;
+        PROG[3].style.visibility = "visible";
+        progress(PROG[3]);
       } else {
         bar.x2 -= updateInterval;
       }
-    } else if (element === "prog4") {
+    } else if (bar === PROG[3]) {
       if (bar.y2 <= 0) {
         clearInterval(id);
       } else {

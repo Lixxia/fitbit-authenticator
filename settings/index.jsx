@@ -20,3 +20,10 @@ function mySettings(props) {
 }
 
 registerSettingsPage(mySettings);
+
+//TODO
+//- Add progress bar colors/auto darken background based on input
+//- Text colors
+//- Optional text counter
+//- Font options
+//- Documentation/discription of use

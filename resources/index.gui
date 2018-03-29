@@ -52,15 +52,15 @@
   </use>
   
   <!--   Progress Background -->
+  <line id="prog0-bg" class="progress dim" />
   <line id="prog1-bg" class="progress dim" />
   <line id="prog2-bg" class="progress dim" />
   <line id="prog3-bg" class="progress dim" />
-  <line id="prog4-bg" class="progress dim" />
   
   <!--   Progress Bars -->
+  <line id="prog0" class="progress" />
   <line id="prog1" class="progress" />
   <line id="prog2" class="progress" />
   <line id="prog3" class="progress" />
-  <line id="prog4" class="progress" />
   
 </svg>
