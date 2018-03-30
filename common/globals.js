@@ -19,9 +19,9 @@ export const COLORS = [
 ]
 
 export const FONTS = [
-  {name: "Tungsten-Medium"},
   {name: "System-Regular"},
+  {name: "Tungsten-Medium"},
   {name: "Colfax-Regular"},
   {name: "Fabrikat-Bold"},
-  {name: "Seville-Regular"}
+  {name: "Seville-Light"}
 ]

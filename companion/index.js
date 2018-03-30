@@ -55,16 +55,24 @@ function revokeLast(item, array) {
 
 // A user changes settings
 settingsStorage.onchange = evt => {
-  // console.log("new " + evt.key + evt.newValue);
-  // console.log("old? " + evt.key + evt.oldValue);
+  console.log("new " + evt.key + evt.newValue);
+  console.log("old? " + evt.key + evt.oldValue);
   
   if (evt.key === "color" || evt.key === "progress_toggle" || evt.key === "text_toggle" || evt.key === "font") {
     let arr = {};
-    // console.log(evt.key + " option changed in settings.");
+    console.log(evt.key + " option changed in settings to" + evt.newValue);
     
     arr[evt.key] = JSON.parse(evt.newValue)
     sendVal(arr);
     settingsStorage.setItem(evt.key, evt.newValue);
+    return;
+  }
+  
+  if (evt.oldValue !== null && evt.oldValue.length === evt.newValue.length) {
+    console.log("Reordering elements.");
+    let reorder = {"reorder": JSON.parse(evt.newValue)};
+    sendVal(reorder);
+    settingsStorage.setItem(TOKEN_LIST, evt.newValue);
     return;
   }
 
@@ -136,7 +144,7 @@ settingsStorage.onchange = evt => {
     delete tokens[i]["token"];
   }
   console.log("after delete" + JSON.stringify(tokens));
-  settingsStorage.setItem('token_list', JSON.stringify(tokens));
+  settingsStorage.setItem(TOKEN_LIST, JSON.stringify(tokens));
   let tokens2 = settingsStorage.getItem(TOKEN_LIST);
   console.log("after set" + tokens2)
 };

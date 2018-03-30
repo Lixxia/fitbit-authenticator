@@ -34,6 +34,7 @@
   x: 50%;
   y: 70;
   fill: gray;
+  text-length: 25;
   text-anchor: middle;
 }
 

@@ -14,7 +14,7 @@ const PROG_BG = ['0','1','2','3'].map(num => document.getElementById(`prog${num}
 try {
   const TOKENS = fs.readFileSync(FILE_NAME, "cbor");
 } catch (err) {
-  console.log("File not found or failed to parse, initializing JSON.");
+  console.error("File not found, initializing JSON.");
   const TOKENS = {"data":[]};
 }
 
@@ -29,7 +29,7 @@ for (let i=0; i<TOKEN_NUM; i++) {
 
 // Message is received
 messaging.peerSocket.onmessage = evt => {
-  // console.log(`App received: ${JSON.stringify(evt)}`);
+  console.log(`App received: ${JSON.stringify(evt)}`);
   
   let parsed_evt = JSON.parse(JSON.stringify(evt));
   if (parsed_evt.data.hasOwnProperty('color')) {
@@ -56,12 +56,37 @@ messaging.peerSocket.onmessage = evt => {
     return;
   }
   
+  
   if (parsed_evt.data.hasOwnProperty('font')) {
     let font = parsed_evt.data.font.selected;
     let elements = document.getElementsByTagName("text");
     for (let e in elements) {
       elements[e].style.fontFamily = FONTS[font].name;
     }
+    updateOtp();
+    return;
+  }
+  
+  if (parsed_evt.data.hasOwnProperty('reorder')) {
+    console.log("Reordering tokens");
+    let newOrder = [];
+    let fileOrder = [];
+    let newTokens = {"data":[]};
+    for (let i in parsed_evt.data.reorder) {
+      newOrder.push(parsed_evt.data.reorder[i].name)
+    }
+    for (let t in TOKENS.data) {
+      fileOrder.push(TOKENS.data[t].name);
+    }
+    console.log("New order names " + newOrder);
+    console.log("File order names " + fileOrder);
+    for (let a in newOrder) {
+      newTokens.data.push(TOKENS.data[fileOrder.indexOf(newOrder[a])]);
+    }
+    TOKENS = newTokens;
+    console.log("new tokens " + JSON.stringify(TOKENS));
+    fs.writeFileSync(FILE_NAME, TOKENS, "cbor");
+    updateOtp();
     return;
   }
   
@@ -76,10 +101,11 @@ messaging.peerSocket.onmessage = evt => {
     for (let j=0; j<parsed_evt.data.length; j++) {
       if (parsed_evt.data[j].hasOwnProperty('token')) {
         TOKENS.data.push({"name":parsed_evt.data[j]["name"],"token":parsed_evt.data[j]["token"]});
-      }
+      } 
     }
   }
-  // console.log("json to be written: " + JSON.stringify(TOKENS));
+  
+  console.log("json to be written: " + JSON.stringify(TOKENS));
   fs.writeFileSync(FILE_NAME, TOKENS, "cbor");
   
   // Send new data to TOTP generation
