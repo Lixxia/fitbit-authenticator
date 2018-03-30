@@ -2,27 +2,17 @@ import document from "document";
 import * as messaging from "messaging";
 import * as fs from "fs";
 import {TOTP} from "../common/totp.js";
-import {TOKEN_NUM} from "../common/globals.js";
+import {TOKEN_NUM,FILE_NAME,COLORS,FONTS} from "../common/globals.js";
 import { me as device } from "device";
 
 // Progress bar constants
 const WIDTH = device.screen.width;
 const HEIGHT = device.screen.height;
 const PROG = ['0','1','2','3'].map(num => document.getElementById(`prog${num}`));
-
-// Testing touch, highlight on tap?
-// let list = document.getElementById("tokenList");
-// let items = list.getElementsByClassName("tile-list-item");
-
-// items.forEach((element, index) => {
-//   let touch = element.getElementById("touch-me");
-//   touch.onclick = (evt) => {
-//     console.log(`touched: ${index}`);
-//   }
-// });
+const PROG_BG = ['0','1','2','3'].map(num => document.getElementById(`prog${num}-bg`));
 
 try {
-  const TOKENS = JSON.parse(fs.readFileSync("tokens.json", "json"));
+  const TOKENS = fs.readFileSync(FILE_NAME, "cbor");
 } catch (err) {
   console.log("File not found or failed to parse, initializing JSON.");
   const TOKENS = {"data":[]};
@@ -40,7 +30,40 @@ for (let i=0; i<TOKEN_NUM; i++) {
 // Message is received
 messaging.peerSocket.onmessage = evt => {
   // console.log(`App received: ${JSON.stringify(evt)}`);
+  
   let parsed_evt = JSON.parse(JSON.stringify(evt));
+  if (parsed_evt.data.hasOwnProperty('color')) {
+    let color = parsed_evt.data.color;
+    for (let i=0; i<4;i++) {
+      PROG[i].style.fill = COLORS[color].color;
+      PROG_BG[i].style.fill = COLORS[color].color;
+      document.getElementById("time-bg").style.fill = COLORS[color].color;
+    }
+    let elements = document.getElementsByClassName("totp");
+    for (let e in elements) {
+      elements[e].style.fill = COLORS[color].color;
+    }
+    return;
+  }
+  
+  if (parsed_evt.data.hasOwnProperty('text_toggle') && parsed_evt.data.text_toggle) {
+    document.getElementById("time-left").style.opacity = 1;
+    document.getElementById("time-bg").style.opacity = 1;
+    return;
+  } else if (parsed_evt.data.hasOwnProperty('text_toggle')) {
+    document.getElementById("time-left").style.opacity = 0;
+    document.getElementById("time-bg").style.opacity = 0;
+    return;
+  }
+  
+  if (parsed_evt.data.hasOwnProperty('font')) {
+    let font = parsed_evt.data.font.selected;
+    let elements = document.getElementsByTagName("text");
+    for (let e in elements) {
+      elements[e].style.fontFamily = FONTS[font].name;
+    }
+    return;
+  }
   
   if (parsed_evt.data.hasOwnProperty('delete')) {
     console.log("Deleted item passed from settings: " + JSON.stringify(parsed_evt.data.delete));
@@ -51,18 +74,13 @@ messaging.peerSocket.onmessage = evt => {
     }
   } else {
     for (let j=0; j<parsed_evt.data.length; j++) {
-      // console.log("Is it a token?:" + parsed_evt.data[j].hasOwnProperty('token'));
       if (parsed_evt.data[j].hasOwnProperty('token')) {
-        // console.log("Name has a token: " + parsed_evt.data[j]["name"] + "=" + parsed_evt.data[j]["token"]);
         TOKENS.data.push({"name":parsed_evt.data[j]["name"],"token":parsed_evt.data[j]["token"]});
       }
-      // else {
-      //   console.log("No Token: " + JSON.stringify(parsed_evt.data[j]["name"]));
-      // }
     }
   }
   // console.log("json to be written: " + JSON.stringify(TOKENS));
-  fs.writeFileSync("tokens.json", JSON.stringify(TOKENS), "json");
+  fs.writeFileSync(FILE_NAME, TOKENS, "cbor");
   
   // Send new data to TOTP generation
   updateOtp();
@@ -128,7 +146,6 @@ function timer() {
     PROG[3].style.visibility = "hidden"; //last bar may repeat animation if lagged
     progress(PROG[0]); 
   }
-
 }
 
 // Play catchup on progress bar if viewing app between above thresholds
@@ -157,8 +174,11 @@ function resumeTimer() {
     i++;
     catchUp -= WIDTH;
   } 
-  console.log("Calling prog" + (i-1));
-  progress(PROG[i-1]);
+  if (i === 0) {
+    progress(PROG[0]);
+  } else {
+    progress(PROG[i-1]);
+  }
 }
 
 // Generate smooth JS animation for progress bar

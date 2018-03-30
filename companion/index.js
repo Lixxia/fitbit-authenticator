@@ -6,7 +6,7 @@ import {TOTP} from "../common/totp.js";
 // Message socket opens
 messaging.peerSocket.onopen = () => {
   console.log("Companion Socket Open");
-  //restoreSettings();
+  restoreSettings();
 };
 
 // Message socket closes
@@ -55,18 +55,26 @@ function revokeLast(item, array) {
 
 // A user changes settings
 settingsStorage.onchange = evt => {
-  console.log("new " + evt.key + evt.newValue);
-  console.log("old? " + evt.key + evt.oldValue);
-  // console.log("Result of unique check " + checkUniqueNames(JSON.parse(evt.newValue)));
+  // console.log("new " + evt.key + evt.newValue);
+  // console.log("old? " + evt.key + evt.oldValue);
   
+  if (evt.key === "color" || evt.key === "progress_toggle" || evt.key === "text_toggle" || evt.key === "font") {
+    let arr = {};
+    // console.log(evt.key + " option changed in settings.");
+    
+    arr[evt.key] = JSON.parse(evt.newValue)
+    sendVal(arr);
+    settingsStorage.setItem(evt.key, evt.newValue);
+    return;
+  }
+
   let tokens = settingsStorage.getItem(TOKEN_LIST);
-  console.log("before changes, before parse" + tokens);
   try {
     tokens = JSON.parse(tokens);
   }
   catch (e) {
-    console.log("Settings value could not be decoded")
-    // return;
+    console.log("Settings value could not be decoded.")
+    return;
   }
   let newVal = JSON.parse(evt.newValue);
   var rejectNames = checkUniqueNames(JSON.parse(evt.newValue));
@@ -85,14 +93,8 @@ settingsStorage.onchange = evt => {
       
       console.log("Deleting some other item.");
       
-      for (var o in oldVal) {
-        // console.log("oldvals " + JSON.stringify(oldVal[o]["name"]));
-        old_names.push(oldVal[o]["name"]);
-      }
-      
-      for (var n in newVal) {
-        new_names.push(newVal[n]["name"]);
-      }
+      for (let o in oldVal) { old_names.push(oldVal[o]["name"]); }
+      for (let n in newVal) { new_names.push(newVal[n]["name"]); }
       
       let delItem = old_names.filter(function(i) {
         return new_names.indexOf(i) < 0;
@@ -139,23 +141,21 @@ settingsStorage.onchange = evt => {
   console.log("after set" + tokens2)
 };
 
-/**
 // Restore any previously saved settings and send to the device
-function restoreSettings() {
+function restoreSettings() { 
   for (let index = 0; index < settingsStorage.length; index++) {
     let key = settingsStorage.key(index);
-    if (key) {
-      let data = {
-        key: key,
-        newValue: settingsStorage.getItem(key)
-      };
+    // Skip token_list as settings only stores a list of names
+    if (key && key !== "token_list") {
+      let data = {};
+      data[key] = JSON.parse(settingsStorage.getItem(key));
       sendVal(data);
     }
   }
 }
-**/
 
 // Send data to device using Messaging API
+
 function sendVal(data) {
   if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
     messaging.peerSocket.send(data);

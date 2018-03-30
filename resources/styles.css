@@ -8,9 +8,9 @@
 #prog2 { x1: 100%; y1: 100%; x2: 100%; y2: 100%; }
 #prog3 { x1: 0; y1: 100%; x2: 0; y2: 100%; }
 
-#prog0-bg { x1: 0; y1: 0; x2: 100%; y2: 0; }
-#prog1-bg { x1: 100%; y1: 0; x2: 100%; y2: 100%; }
-#prog2-bg { x1: 100%; y1: 100%; x2: 0; y2: 100%; }
+#prog0-bg { x1: 0; y1: 0; x2: 100%-5; y2: 0; }
+#prog1-bg { x1: 100%; y1: 0; x2: 100%; y2: 100%-5; }
+#prog2-bg { x1: 100%; y1: 100%; x2: 5; y2: 100%; }
 #prog3-bg { x1: 0; y1: 100%; x2: 0; y2: 0; }
 
 #tile-divider-bottom {
@@ -24,7 +24,7 @@
 #totp {
   font-size: 50;
   x: 50%;
-  y: 50%;
+  y: 60%;
   fill: lightskyblue; 
   text-anchor: middle;
 }
@@ -38,8 +38,9 @@
 }
 
 #container {
+  x: 5;
   height: 100%-5;
-  width: 100%;
+  width: 100%-10;
   fill: white;
 }
 
@@ -56,10 +57,14 @@
 }
 
 .progress {
-  fill: blue;
+  fill: #111111;
   stroke-width: 10;
 }
 
 .dim {
-  fill: black;
+  opacity: 0.3;
+}
+
+text {
+  font-family: "System-Regular";
 }
