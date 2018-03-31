@@ -10,7 +10,6 @@
 
 <!--     <rect id="tile-divider-bottom" class="tile-divider-bottom" height="5"/> -->
   </symbol>
-  <textarea id="status" class="status"></textarea>
   
   <use id="tokenList" href="#tile-list" height="100%" width="100%">
     <var id="reorder-enabled" value="0"/>
@@ -48,6 +47,8 @@
     </use>
   </use>
   
+  <textarea id="status" class="status"></textarea>
+
   <!--   Text Counter -->
   <circle id="time-bg" cx="90%" cy="90%" r="25" fill="gray" />
   <text id="time-left" x="90%" y="93%" height="47" width="80" fill="white" text-anchor="middle">O</text>

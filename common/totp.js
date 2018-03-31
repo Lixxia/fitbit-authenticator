@@ -54,5 +54,4 @@ export function TOTP() {
     }
     return otp;
   };
-
 }

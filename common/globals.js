@@ -23,5 +23,5 @@ export const FONTS = [
   {name: "Tungsten-Medium"},
   {name: "Colfax-Regular"},
   {name: "Fabrikat-Bold"},
-  {name: "Seville-Light"}
+  {name: "Seville-Condensed"}
 ]
