@@ -15,10 +15,7 @@ messaging.peerSocket.onclose = () => {
   console.log("Companion Socket Closed");
 };
 
-settingsStorage.onchange = evt => {
-  console.log("new " + evt.key + evt.newValue);
-  console.log("old? " + evt.key + evt.oldValue);
-  
+settingsStorage.onchange = evt => {  
   if (evt.key === "color" || evt.key === "progress_toggle" || evt.key === "text_toggle" || evt.key === "font") { //simple setting
     sendVal(settings.singleSetting(evt.key, evt.newValue));
   } else if (evt.oldValue !== null && evt.oldValue.length === evt.newValue.length) { //reorder

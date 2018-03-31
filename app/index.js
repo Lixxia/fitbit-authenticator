@@ -7,6 +7,8 @@ import { display } from "display";
 let ui = new AuthUI();
 let token = new AuthToken();
 
+
+
 // check if file exists, otherwise nothing to display
 try {
   const file = token.reloadTokens();
@@ -15,6 +17,15 @@ try {
 } catch (e) {
   ui.updateUI("none");
 }
+
+// Need to test when I get an actual device
+display.addEventListener("change", function() {
+  if (display.on) {
+    wake();
+  } else {
+    sleep();
+  }
+});
 
 // Listen for the onopen event
 messaging.peerSocket.onopen = function() {
@@ -36,6 +47,9 @@ messaging.peerSocket.onmessage = function(evt) {
   } else if (evt.data.hasOwnProperty('delete')) {
     ui.updateUI("loaded", token.deleteToken(evt.data.delete));
   } else {
+    if (file.data.length === 0) {
+      ui.resumeTimer(); //This is the first token, start animation
+    }
     ui.updateUI("loaded", token.writeToken(evt.data));
   }
 }
@@ -45,23 +59,12 @@ messaging.peerSocket.onerror = function(err) {
   ui.updateUI("error");
 }
 
-// Need to test when I get an actual device
-display.addEventListener("change", function() {
-  if (display.on) {
-    wake();
-  } else {
-    sleep();
-  }
-})
-
 function wake() {
   console.log("I'm awake! I'm awake...");
-  ui.resumeTimer();
 }
 
 function sleep() {
   ui.stopAnimation();
-  clearInterval(id);
 }
 
 function timer() {

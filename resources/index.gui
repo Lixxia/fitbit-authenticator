@@ -1,16 +1,14 @@
 <svg id="display" viewport-fill="lightgray">
 
-  <!-- Define a reusable tile to display a token -->
+  <!-- Reusable token tile -->
   <symbol id="tile-token" focusable="false" pointer-events="none" system-events="all">
     <rect id="container" />
   
     <text id="totp" class="totp">Token Display</text>
     <text id="totp-name">example@localhost.com</text>
-    <rect id="touch-me" pointer-events="all" x="0" y="0" width="100%" height="100%-2" opacity="0"/>
-
-<!--     <rect id="tile-divider-bottom" class="tile-divider-bottom" height="5"/> -->
   </symbol>
   
+  <!--   Tile display list -->
   <use id="tokenList" href="#tile-list" height="100%" width="100%">
     <var id="reorder-enabled" value="0"/>
     <var id="separator-height-bottom" value="2"/>
@@ -47,11 +45,12 @@
     </use>
   </use>
   
+  <!--   Info Text -->
   <textarea id="status" class="status"></textarea>
 
   <!--   Text Counter -->
-  <circle id="time-bg" cx="90%" cy="90%" r="25" fill="gray" />
-  <text id="time-left" x="90%" y="93%" height="47" width="80" fill="white" text-anchor="middle">O</text>
+  <circle id="time-bg"/>
+  <text id="time-left">O</text>
 
   <!--   Progress Background -->
   <line id="prog0-bg" class="progress dim" />

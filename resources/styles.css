@@ -45,6 +45,22 @@
   fill: white;
 }
 
+#time-left {
+  x: 100%-30; 
+  y: 100%-20;
+  height: 47;
+  width: 80; 
+  fill: white;
+  text-anchor: middle;
+}
+
+#time-bg {
+  cx: 100%-30;
+  cy: 100%-30;
+  r: 25;
+  fill: gray;
+}
+
 .status {
   text-anchor: middle;
   display-align: center;

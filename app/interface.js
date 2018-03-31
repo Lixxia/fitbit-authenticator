@@ -29,13 +29,16 @@ AuthUI.prototype.updateUI = function(state, tokens) {
     } 
     this.tokenList.style.display = "inline";
     this.statusText.text = "";
+    for (let p of this.prog) {
+      p.style.visibility = "visible";
+    }
 
     this.updateTokens(tokens);
   }
   else {
     this.tokenList.style.display = "none";
     for (let p of this.prog) {
-      p.style.display = "none";
+      p.style.visibility = "hidden";
     } 
     this.stopAnimation();
 
@@ -157,7 +160,7 @@ AuthUI.prototype.startProgress = function(num) {
   }
 }
 
-AuthUI.prototype.resumeTimer = function() {  
+AuthUI.prototype.resumeTimer = function() {
   let epoch = Math.round(new Date().getTime() / 1000.0);
   let catchUp = (epoch % 30) * 43;
   let i=0;
