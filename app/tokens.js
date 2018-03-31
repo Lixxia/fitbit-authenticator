@@ -15,24 +15,26 @@ AuthToken.prototype.reorderTokens = function(tokens) {
   let fileOrder = [];
   let newTokens = {"data":[]};
   
-  for (let i in tokens) {
-    newOrder.push(tokens[i].name)
+  for (let token of tokens) {
+    newOrder.push(token.name)
   }
   
   for (let t in this.file.data) {
     fileOrder.push(this.file.data[t].name);
   }
-  for (let a in newOrder) {
-    newTokens.data.push(this.file.data[fileOrder.indexOf(newOrder[a])]);
+
+  for (let name of newOrder) {
+    newTokens.data.push(this.file.data[fileOrder.indexOf(name)]);
   }
-  fs.writeFileSync(FILE_NAME, newTokens, "cbor");  
+  console.log("newtokens " + JSON.stringify(newTokens));
+  fs.writeFileSync(FILE_NAME, newTokens, "cbor");
   return newTokens;
 }  
 
 AuthToken.prototype.writeToken = function(tokens) {
   tokens = JSON.parse(JSON.stringify(tokens)); //hasOwnProperty does not function correctly without this re-parse
   
-  for (let j=0; j<tokens.length; j++) {
+  for (let j in tokens) {
     if (tokens[j].hasOwnProperty('token')) {
       this.file.data.push({"name":tokens[j]["name"],"token":tokens[j]["token"]});
     }
@@ -42,7 +44,7 @@ AuthToken.prototype.writeToken = function(tokens) {
 }
 
 AuthToken.prototype.deleteToken = function(token) {
-  for (let i=0; i<this.file.data.length; i++) {
+  for (let i in this.file.data) {
     if(this.file.data[i]["name"] === token) {
       this.file.data.splice(i, 1);
     }

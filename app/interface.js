@@ -13,7 +13,7 @@ export function AuthUI() {
   this.ids = [];
 
   this.tiles = [];
-  for (let i=0; i < TOKEN_NUM; i++) {
+  for (let i=0; i<TOKEN_NUM; i++) {
     let tile = document.getElementById(`token-${i}`);
     if (tile) {
       this.tiles.push(tile);
@@ -83,14 +83,14 @@ AuthUI.prototype.updateColors = function(color) {
   let time_bg = document.getElementById("time-bg")
   let totps = document.getElementsByClassName("totp");
   
-  for (let i=0; i<4;i++) {
+  for (let i in this.prog) {
     this.prog[i].style.fill = COLORS[color].color;
     this.prog_bg[i].style.fill = COLORS[color].color;
-    time_bg.style.fill = COLORS[color].color;
   }
-  for (let t in totps) {
-    totps[t].style.fill = COLORS[color].color;
+  for (let totp of totps) {
+    totp.style.fill = COLORS[color].color;
   }
+  time_bg.style.fill = COLORS[color].color;
 }
 
 AuthUI.prototype.updateFont = function(font) {

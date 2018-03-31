@@ -12,8 +12,7 @@ function setDefaults(props) {
 
 function mySettings(props) {
   setDefaults(props);
-  // console.log(JSON.stringify(props));
-  
+ 
   return (
     <Page>
       <Section title={<Text bold align="center">Tokens</Text>}
@@ -75,4 +74,3 @@ function mySettings(props) {
 }
 
 registerSettingsPage(mySettings);
-
