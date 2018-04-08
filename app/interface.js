@@ -1,5 +1,4 @@
 import {TOKEN_NUM,COLORS,FONTS} from "../common/globals.js";
-import {TOTP} from "../common/totp.js";
 import document from "document";
 import { me as device } from "device";
 
@@ -21,9 +20,11 @@ export function AuthUI() {
   }
 }
 
-AuthUI.prototype.updateUI = function(state, tokens) {
+AuthUI.prototype.updateUI = function(state, totps) {
+  document.getElementById("issue-bg").style.display = "none";
+  document.getElementById("issue-text").style.display = "none";
   if (state === "loaded") {
-    if (tokens.data.length === 0) {
+    if (totps.length === 0) {
       this.updateUI("none");
       return;
     } 
@@ -33,7 +34,7 @@ AuthUI.prototype.updateUI = function(state, tokens) {
       p.style.visibility = "visible";
     }
 
-    this.updateTokens(tokens);
+    this.updateTokens(totps);
   }
   else {
     this.tokenList.style.display = "none";
@@ -49,7 +50,7 @@ AuthUI.prototype.updateUI = function(state, tokens) {
       this.statusText.text = "No valid tokens, please add via settings."
     }
     else if (state === "error") {
-      this.statusText.text = "An error has occured.";
+      this.statusText.text = "An error has occured. ";
     }
   }
 }
@@ -58,9 +59,7 @@ AuthUI.prototype.updateTextTimer = function(time) {
   document.getElementById("time-left").text = time;
 }
 
-AuthUI.prototype.updateTokens = function(tokens) {
-  let totpObj = new TOTP();
-
+AuthUI.prototype.updateTokens = function(totps) {
   for (let i=0; i<TOKEN_NUM; i++) {
     let tile = this.tiles[i];
     
@@ -69,15 +68,15 @@ AuthUI.prototype.updateTokens = function(tokens) {
     }
     
     try {
-      const token_val = tokens.data[i]["token"];
-      const token_name = tokens.data[i]["name"];
+      const token_val = totps[i]["totp"];
+      const token_name = totps[i]["name"];
     } catch (e) {
       tile.style.display = "none";
       continue;
     }
  
     tile.style.display = "inline";
-    tile.getElementById("totp").text = totpObj.getOTP(token_val); 
+    tile.getElementById("totp").text = token_val; 
     tile.getElementById("totp-name").text = token_name;    
   }
 }
@@ -120,7 +119,7 @@ AuthUI.prototype.startProgress = function(num) {
   let updateInterval = 1;
   let bar = this.prog[num];
   let self = this;
-  let id = setInterval(frame, 24);
+  let id = setInterval(frame, 9);
   this.ids.push(id);
   
   function frame() {
@@ -145,7 +144,6 @@ AuthUI.prototype.startProgress = function(num) {
       if (bar.x2 <= 0) {
         clearInterval(id);
         self.prog[3].y2 = self.height;
-        self.prog[3].style.visibility = "visible";
         self.startProgress(3);
       } else {
         bar.x2 -= updateInterval;
@@ -160,11 +158,19 @@ AuthUI.prototype.startProgress = function(num) {
   }
 }
 
+AuthUI.prototype.clearProgress = function() {
+  this.stopAnimation();
+  this.prog[0].x2 = 0;
+  this.prog[1].y2 = 0;
+  this.prog[2].x2 = this.width;
+  this.prog[3].y2 = this.height;
+}
+
 AuthUI.prototype.resumeTimer = function() {
   let epoch = Math.round(new Date().getTime() / 1000.0);
   let catchUp = (epoch % 30) * 43;
   let i=0;
-
+  this.clearProgress();
   while (catchUp > 0) {
     if (i === 0) {
       this.prog[0].x2 = Math.min(this.width,catchUp);
@@ -191,15 +197,6 @@ AuthUI.prototype.resumeTimer = function() {
   } else {
     this.startProgress(i-1);
   }
-}
-
-AuthUI.prototype.refreshProgress = function() {
-  this.prog[0].x2 = 0;
-  this.prog[1].y2 = 0;
-  this.prog[2].x2 = this.width;
-  this.prog[3].y2 = this.height;
-  this.prog[3].style.visibility = "hidden"; //last bar may repeat animation if lagged
-  this.startProgress(0);
 }
 
 AuthUI.prototype.stopAnimation = function() {

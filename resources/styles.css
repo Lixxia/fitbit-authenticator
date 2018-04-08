@@ -13,6 +13,9 @@
 #prog2-bg { x1: 100%; y1: 100%; x2: 5; y2: 100%; }
 #prog3-bg { x1: 0; y1: 100%; x2: 0; y2: 5; }
 
+#prog0-fix { x1: 0; y1: 0; x2: 100%-5; y2: 0; }
+#prog2-fix { x1: 100%; y1: 100%; x2: 5; y2: 100%; }
+
 #tile-divider-bottom {
   x: 0;
   y: 100%-20;
@@ -61,6 +64,13 @@
   fill: gray;
 }
 
+#issue-bg {
+  x: 5;
+  height: 100%-5;
+  width: 100%-10;
+  fill: white;
+}
+
 .status {
   text-anchor: middle;
   display-align: center;
@@ -81,6 +91,13 @@
 .dim {
   opacity: 0.3;
 }
+
+.fix {
+  fill: lightgray;
+  stroke-width: 10;
+}
+
+
 
 text {
   font-family: "System-Regular";

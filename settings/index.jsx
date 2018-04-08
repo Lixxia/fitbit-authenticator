@@ -23,7 +23,7 @@ function mySettings(props) {
         <Text align="center">Invalid formatting or tokens will result in the item being rejected.</Text>
         <Text align="center"> Items can be reordered in the settings.</Text>
         <Text bold align="center">Security Considerations</Text>
-        <Text align="center">Any tokens entered are transmitted to the watch and stored locally on the device, they are then removed from the phone's storage. They will never be backed up on remote servers or stored on the phone.</Text>
+        <Text align="center">Any secret tokens entered are stored directly on the phone. Once stored they are stripped from the displayed settings so that they are no longer viewable from the settings. Every 30 seconds the new set of TOTPs is sent to the watch using the built in messaging API.</Text>
         <Text align="center">If the application is uninstalled from the watch, all associated data is permanently deleted. Please consider this before using this as your only means of accessing your tokens.</Text>
             </Section>
         }>
@@ -60,6 +60,8 @@ function mySettings(props) {
         />
       </Section>
       <Section title={<Text bold align="center">Support</Text>}>
+        <Text>In some cases the companion may be unable to communicate with the watch. It's best to reopen the app if this happens.</Text>
+        <Text>If you experience any problems please contact me or create an issue on github!</Text>
         <Link source="https://github.com/Lixxia/fitbit-authenticator">
         <TextImageRow
           label="Github"
@@ -67,7 +69,12 @@ function mySettings(props) {
           icon="https://raw.githubusercontent.com/Lixxia/fitbit-authenticator/master/resources/GitHub-Mark-64px.png"
           />
         </Link>
+        
       </Section>
+      <Button
+        list
+        label={<Text bold align="center">Clear Settings Storage</Text>}
+        onClick={() => props.settingsStorage.clear()}/>
     </Page>
 
   );

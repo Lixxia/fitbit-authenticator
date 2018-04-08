@@ -1,7 +1,5 @@
-import * as messaging from "messaging";
 import {settingsStorage} from "settings";
-import {TOKEN_LIST} from "../common/globals.js";
-import {TOTP} from "../common/totp.js";
+import {TOKEN_LIST,TOKEN_SECRETS} from "../common/globals.js";
 
 export function singleSetting(key, setting) {
   let arr = {};
@@ -39,20 +37,6 @@ export function deleteItem(oldVal,newVal) {
   return deleteArr;
 }
 
-export function validateToken(token) {
-  if (! token) return false;
-  
-  let totpTest = new TOTP();
-  
-  try {
-    totpTest.getOTP(token);
-  } catch (e) {
-    console.error("Token was invalid, following error given: " + e);
-    return false;
-  }
-  return true;
-} 
-  
 export function checkUniqueNames(newArray) {
   var testArray = {};
   var duplicates = [];
@@ -78,37 +62,14 @@ export function revokeLast(item, array) {
   settingsStorage.setItem(item, JSON.stringify(array));
 }
 
-export function newToken(newVal) {
-  let tokens = JSON.parse(settingsStorage.getItem(TOKEN_LIST));
-  let rejectNames = checkUniqueNames(newVal);
-  
-  if ( ! newVal[newVal.length-1]["name"].split(":")[0]) { //token, validate
-    console.error("Name cannot be empty.");
-    revokeLast(TOKEN_LIST, tokens); 
-  } else if (newVal[newVal.length-1]["name"].indexOf(':') === -1) {
-    console.error("Delimeter not found, removing latest user submission.");
-    revokeLast(TOKEN_LIST, tokens);
-  } else if ( rejectNames.length > 0 ) {
-    console.error("Item already exists, removing latest user submission.");
-    revokeLast(TOKEN_LIST, tokens);
-  } else if ( ! validateToken(newVal[newVal.length-1]["name"].split(":")[1])) {
-    console.error("Invalid token, removing latest user submission.");
-    revokeLast(TOKEN_LIST, tokens);
-  }
-
-  // Build tokens
-  for (let i=0; i<tokens.length;i++) {
-    tokens[i]["token"] = tokens[i]["name"].split(":")[1];
-    tokens[i]["name"] = tokens[i]["name"].split(":")[0];
-  }
-  settingsStorage.setItem(TOKEN_LIST, JSON.stringify(tokens));
-  return tokens;
-}
-
 export function stripTokens() {
-  let tokens = JSON.parse(settingsStorage.getItem(TOKEN_LIST));
+  // After storing the secrets, don't want any tokens visible in settings
+  let tokens = JSON.parse(settingsStorage.getItem(TOKEN_SECRETS));
+  
   for (let i=0; i<tokens.length;i++) {
     delete tokens[i]["token"];
   }
+  
   settingsStorage.setItem(TOKEN_LIST, JSON.stringify(tokens));
+  return;
 }

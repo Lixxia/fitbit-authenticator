@@ -47,16 +47,25 @@
   
   <!--   Info Text -->
   <textarea id="status" class="status"></textarea>
-
+  
+  <!-- Connection Issue -->
+  <rect id="issue-bg"/>
+  <textarea id="issue-text" class="status">Unable to connect to the companion. Please restart the application.</textarea>
+  
   <!--   Text Counter -->
   <circle id="time-bg"/>
-  <text id="time-left">O</text>
+  <text id="time-left">0</text>
 
+  <!--   Progress Transparency Fix -->
+  <line id="prog0-fix" class="fix" />
+  <line id="prog2-fix" class="fix" />
+  
   <!--   Progress Background -->
   <line id="prog0-bg" class="progress dim" />
   <line id="prog1-bg" class="progress dim" />
   <line id="prog2-bg" class="progress dim" />
   <line id="prog3-bg" class="progress dim" />
+
   
   <!--   Progress Bars -->
   <line id="prog0" class="progress" />

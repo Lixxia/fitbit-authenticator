@@ -1,6 +1,6 @@
-export const TOKEN_LIST = "token_list";
+export const TOKEN_LIST = "token_list"; //displayed in settings
+export const TOKEN_SECRETS = "token_secrets"; //stored internally
 export const TOKEN_NUM = 10;
-export const FILE_NAME = "tokens.json";
 
 export const COLORS = [
   {color: "#001F3F", value: "0"}, //navy

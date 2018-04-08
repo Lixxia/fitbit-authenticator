@@ -1,24 +1,11 @@
-import document from "document";
 import * as messaging from "messaging";
 import { AuthUI } from "./interface.js";
-import { AuthToken } from "./tokens.js";
 import { display } from "display";
 
 let ui = new AuthUI();
-let token = new AuthToken();
+const ids = [];
+const timeout = [];
 
-
-
-// check if file exists, otherwise nothing to display
-try {
-  const file = token.reloadTokens();
-  ui.updateUI("loaded", file);
-  ui.resumeTimer();
-} catch (e) {
-  ui.updateUI("none");
-}
-
-// Need to test when I get an actual device
 display.addEventListener("change", function() {
   if (display.on) {
     wake();
@@ -30,57 +17,86 @@ display.addEventListener("change", function() {
 // Listen for the onopen event
 messaging.peerSocket.onopen = function() {
   ui.updateUI("loading");
-  messaging.peerSocket.send("Hi!");
+  messaging.peerSocket.send("Open");
 }
 
 // Listen for the onmessage event
-messaging.peerSocket.onmessage = function(evt) {
+messaging.peerSocket.onmessage = function(evt) {  
   if (evt.data.hasOwnProperty('color')) {
     ui.updateColors(evt.data.color);
   } else if (evt.data.hasOwnProperty('font')) {
     ui.updateFont(evt.data.font.selected);
-    ui.updateUI("loaded", token.reloadTokens()); //re-render for font centering
+    //re-render for font centering
+    let epoch = Math.round(new Date().getTime() / 1000.0);
+    getTokens(epoch);
   } else if (evt.data.hasOwnProperty('text_toggle')) {
     ui.updateCounter(evt.data.text_toggle);
-  } else if (evt.data.hasOwnProperty('reorder')) {
-    ui.updateUI("loaded", token.reorderTokens(evt.data.reorder));
-  } else if (evt.data.hasOwnProperty('delete')) {
-    ui.updateUI("loaded", token.deleteToken(evt.data.delete));
-  } else {
-    if (file.data.length === 0) {
-      ui.resumeTimer(); //This is the first token, start animation
+  } else if (evt.data.hasOwnProperty('totps')) { //receive codes
+    timeout = [];
+    ui.updateUI("loaded", evt.data.totps);
+    if (ids.length === 0) { //don't double start animation
+      manageTimer("start");
     }
-    ui.updateUI("loaded", token.writeToken(evt.data));
   }
 }
 
-// Listen for the onerror event
 messaging.peerSocket.onerror = function(err) {
+  console.log("Connection error: " + err.code + " - " + err.message);
   ui.updateUI("error");
 }
 
 function wake() {
-  console.log("I'm awake! I'm awake...");
+  ui.resumeTimer();
 }
 
 function sleep() {
   ui.stopAnimation();
 }
 
+function getTokens(epoch) {
+  if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
+    messaging.peerSocket.send({
+      tokenRequest: epoch
+    });
+  } else {
+    ui.updateUI("error");
+  }
+  timeout.push(epoch);
+}
+
+function manageTimer(arg) {
+  if (arg === "stop") {
+    for (let i of ids) {
+      ui.stopAnimation();
+      clearInterval(i);
+    }
+    
+    setTimeout(function() {
+      if (timeout.length !== 0) {
+        //No msg received in 30s
+        ui.updateUI("error");
+      } 
+    }, 35000);   
+    ids = []; //empty array
+  } else if (arg === "start") {
+    ui.resumeTimer();
+    let id = setInterval(timer, 1000);
+    ids.push(id);  
+  } else {
+    console.error("Invalid timer management argument.")
+  }
+}
+
 function timer() {
   // Update tokens every 30s
   let epoch = Math.round(new Date().getTime() / 1000.0);
   let countDown = 30 - (epoch % 30);
-  if (epoch % 30 == 0) ui.updateUI("loaded", token.reloadTokens());
-  ui.updateTextTimer(countDown);
-  
-  // Reset countdown clock at 30/0 seconds
-  if (countDown === 30) {
-    ui.refreshProgress();
+  if (epoch % 30 == 0) {
+    getTokens(epoch);
+    manageTimer("stop");
   }
+  ui.updateTextTimer(countDown);
 }
-
-var id = setInterval(timer, 1000);
 
 //Test Codes
 //ZVZG5UZU4D7MY4DH

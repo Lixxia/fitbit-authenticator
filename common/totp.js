@@ -36,12 +36,10 @@ export function TOTP() {
     return hex;
   };
 
-  this.getOTP = function(secret) {
+  this.getOTP = function(secret, epoch) {
     try {
-      let epoch = Math.round(new Date().getTime() / 1000.0);
       let time = leftpad(dec2hex(Math.floor(epoch / 30)), 16, "0");
       let hmacObj = new jsSHA("SHA-1", "HEX");
-      
       hmacObj.setHMACKey(base32tohex(secret), "HEX");
       hmacObj.update(time);
       
