@@ -5,6 +5,9 @@ import { me as device } from "device";
 export function AuthUI() {
   this.tokenList = document.getElementById("tokenList");
   this.statusText = document.getElementById("status");
+  this.loadingText = document.getElementById("loading-text");
+  this.loadingAnim = document.getElementById("loading-anim");
+  this.statusBg = document.getElementById("status-bg");
   this.prog = ['0','1','2','3'].map(num => document.getElementById(`prog${num}`));
   this.prog_bg = ['0','1','2','3'].map(num => document.getElementById(`prog${num}-bg`));
   this.width = device.screen.width;
@@ -21,9 +24,9 @@ export function AuthUI() {
 }
 
 AuthUI.prototype.updateUI = function(state, totps) {
-  document.getElementById("issue-bg").style.display = "none";
-  document.getElementById("issue-text").style.display = "none";
+  this.statusBg.style.display = "none";
   if (state === "loaded") {
+    this.loadingAnim.style.display = "none";
     if (totps.length === 0) {
       this.updateUI("none");
       return;
@@ -38,19 +41,16 @@ AuthUI.prototype.updateUI = function(state, totps) {
   }
   else {
     this.tokenList.style.display = "none";
-    for (let p of this.prog) {
-      p.style.visibility = "hidden";
-    } 
     this.stopAnimation();
 
     if (state === "loading") {
-      this.statusText.text = "Loading tokens...";
+      this.statusText.text = "LOADING TOKENS";
     }
     else if (state === "none") {
       this.statusText.text = "No valid tokens, please add via settings."
     }
     else if (state === "error") {
-      this.statusText.text = "An error has occured. ";
+      this.statusText.text = "An error has occured. Please ensure the companion is connected and restart the application.";
     }
   }
 }
@@ -185,7 +185,6 @@ AuthUI.prototype.resumeTimer = function() {
       this.prog[0].x2 = this.width;
       this.prog[1].y2 = this.height;
       this.prog[2].x2 = 0;
-      this.prog[3].style.visibility = "visible";
       this.prog[3].y2 = Math.min(this.height,this.height - catchUp);
     }
     i++;

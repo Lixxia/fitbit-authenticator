@@ -3,10 +3,10 @@
 .item-footer { x: 0; y: 0; width: 100%; height: 20; }
 .tile-list-item { height: 88; }
 
-#prog0 { x1: 0; y1: 0; x2: 0; y2: 0; }
-#prog1 { x1: 100%; y1: 0; x2: 100%; y2: 0; }
-#prog2 { x1: 100%; y1: 100%; x2: 100%; y2: 100%; }
-#prog3 { x1: 0; y1: 100%; x2: 0; y2: 100%; }
+#prog0 { x1: 0; y1: 0; x2: 0; y2: 0; visibility: hidden; }
+#prog1 { x1: 100%; y1: 0; x2: 100%; y2: 0; visibility: hidden; }
+#prog2 { x1: 100%; y1: 100%; x2: 100%; y2: 100%; visibility: hidden; }
+#prog3 { x1: 0; y1: 100%; x2: 0; y2: 100%; visibility: hidden; }
 
 #prog0-bg { x1: 0; y1: 0; x2: 100%-5; y2: 0; }
 #prog1-bg { x1: 100%; y1: 0; x2: 100%; y2: 100%-5; }
@@ -55,6 +55,7 @@
   width: 80; 
   fill: white;
   text-anchor: middle;
+  opacity: 0;
 }
 
 #time-bg {
@@ -62,25 +63,27 @@
   cy: 100%-30;
   r: 25;
   fill: gray;
+  opacity: 0;
 }
 
-#issue-bg {
+#status-bg {
   x: 5;
   height: 100%-5;
   width: 100%-10;
-  fill: white;
+  fill: lightgray;
 }
 
 .status {
   text-anchor: middle;
   display-align: center;
-  x: 5%;
-  y: 5%;
-  width: 90%;
-  height: 90%;
+  x: 18%;
+  y: 18%;
+  width: 190;
+  height: 190;
   text-length:512;
   font-size: 32;
   fill: black;
+  font-family: "Tungsten-Medium";
 }
 
 .progress {

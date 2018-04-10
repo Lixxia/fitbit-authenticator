@@ -45,12 +45,15 @@
     </use>
   </use>
   
-  <!--   Info Text -->
-  <textarea id="status" class="status"></textarea>
+  <!-- Startup Screen-->
+  <rect id="status-bg"/>
+  <g id="loading-anim" transform="translate(50%,50%)">
+    <animateTransform attributeType="rotate" from="0" to="360" begin="load" dur="5" repeatCount="8" final="keep"/>
+    <image x="$-100" y="$-100" width="200" height="200" href="loading.png" load="sync"/>
+  </g>
   
-  <!-- Connection Issue -->
-  <rect id="issue-bg"/>
-  <textarea id="issue-text" class="status">Unable to connect to the companion. Please restart the application.</textarea>
+  <!--   Info Text -->
+  <textarea id="status" class="status">CONNECTING TO COMPANION</textarea>
   
   <!--   Text Counter -->
   <circle id="time-bg"/>

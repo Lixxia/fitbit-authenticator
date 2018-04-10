@@ -19,13 +19,14 @@ function mySettings(props) {
         description={
           <Section>
             <Text bold align="center">Entry Format</Text>
-        <Text align="center">Names of tokens must be unique. All tokens must be entered in the format <Text italic>name</Text><Text bold>:</Text><Text italic>base32token</Text>, the colon delimeter must exist.</Text>
-        <Text align="center">Invalid formatting or tokens will result in the item being rejected.</Text>
-        <Text align="center"> Items can be reordered in the settings.</Text>
-        <Text bold align="center">Security Considerations</Text>
-        <Text align="center">Any secret tokens entered are stored directly on the phone. Once stored they are stripped from the displayed settings so that they are no longer viewable from the settings. Every 30 seconds the new set of TOTPs is sent to the watch using the built in messaging API.</Text>
-        <Text align="center">If the application is uninstalled from the watch, all associated data is permanently deleted. Please consider this before using this as your only means of accessing your tokens.</Text>
-            </Section>
+            <Text align="center">Names of tokens must be unique. All tokens must be entered in the format <Text italic>name</Text><Text bold>:</Text><Text italic>base32token</Text>, the colon delimeter must exist.</Text>
+            <Text align="center">Invalid formatting or tokens will result in the item being rejected.</Text>
+            <Text align="center"> Items can be reordered in the settings. </Text>
+            <Text bold align="center">Security Considerations</Text>
+            <Text align="center">Any secret tokens entered are stored directly on the phone. Once stored they are stripped from the displayed settings so that they are no longer viewable. If the token is still visible in the settings, reload the watch app and it should update.</Text>
+            <Text align="center">New tokens are transmitted to the watch every 30s.</Text>
+            <Text align="center">If the application is uninstalled from the watch, all associated data is permanently deleted. Please consider this before using this as your only means of accessing your tokens.</Text>
+          </Section>
         }>
         <AdditiveList
           settingsKey="token_list"
@@ -60,7 +61,7 @@ function mySettings(props) {
         />
       </Section>
       <Section title={<Text bold align="center">Support</Text>}>
-        <Text>In some cases the companion may be unable to communicate with the watch. It's best to reopen the app if this happens.</Text>
+        <Text>In some cases the companion may be unable to communicate with the watch. It's best to reopen the app/companion if this happens.</Text>
         <Text>If you experience any problems please contact me or create an issue on github!</Text>
         <Link source="https://github.com/Lixxia/fitbit-authenticator">
         <TextImageRow
@@ -71,10 +72,6 @@ function mySettings(props) {
         </Link>
         
       </Section>
-      <Button
-        list
-        label={<Text bold align="center">Clear Settings Storage</Text>}
-        onClick={() => props.settingsStorage.clear()}/>
     </Page>
 
   );

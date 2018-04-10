@@ -23,6 +23,8 @@ AuthToken.prototype.newToken = function(newVal) {
   let tokens = JSON.parse(settingsStorage.getItem(TOKEN_LIST));
   let rejectNames = settings.checkUniqueNames(newVal);
   
+ 
+  
   if ( ! newVal[newVal.length-1]["name"].split(":")[0]) { 
     console.error("Name cannot be empty.");
     settings.revokeLast(TOKEN_LIST, tokens); 
@@ -44,7 +46,7 @@ AuthToken.prototype.newToken = function(newVal) {
   // Build token
   let newToken = newVal.pop();
   this.tokens.push({"name": newToken["name"].split(":")[0],"token": newToken["name"].split(":")[1]});
-  settingsStorage.setItem(TOKEN_SECRETS, JSON.stringify(this.tokens)); 
+  settingsStorage.setItem(TOKEN_SECRETS, JSON.stringify(this.tokens));
   settings.stripTokens();
   return;
 }
@@ -67,7 +69,6 @@ AuthToken.prototype.reorderTokens = function(tokens) {
   let newTokens = [];
     
   for (let token of tokens.reorder) {
-    console.log(token);
     newOrder.push(token.name)
   }
   
@@ -86,9 +87,15 @@ AuthToken.prototype.reloadTokens = function(epoch) {
   if (this.tokens.length !== 0) {
     this.tokens = JSON.parse(settingsStorage.getItem(TOKEN_SECRETS)); //Ensure data is up to date
   }
+  let list = JSON.parse(settingsStorage.getItem(TOKEN_LIST)).length;
+  
+  if (list > this.tokens.length) {
+    console.error("Missing token, re-parse token_list");
+    this.newToken(JSON.parse(settingsStorage.getItem(TOKEN_LIST))); // Re-parse
+    this.tokens = JSON.parse(settingsStorage.getItem(TOKEN_SECRETS)); // Update list again so we don't send old data
+  }
   
   let totps = {"totps":[]};
-  
   for (let j in this.tokens) {
     if (this.tokens[j].hasOwnProperty('token')) {
       totps.totps.push({"name":this.tokens[j]["name"],"totp":this.totpObj.getOTP(this.tokens[j]["token"], epoch)});

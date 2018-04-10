@@ -6,6 +6,9 @@ let ui = new AuthUI();
 const ids = [];
 const timeout = [];
 
+timeout.push("Start");
+checkTimer(); 
+
 display.addEventListener("change", function() {
   if (display.on) {
     wake();
@@ -21,7 +24,7 @@ messaging.peerSocket.onopen = function() {
 }
 
 // Listen for the onmessage event
-messaging.peerSocket.onmessage = function(evt) {  
+messaging.peerSocket.onmessage = function(evt) {
   if (evt.data.hasOwnProperty('color')) {
     ui.updateColors(evt.data.color);
   } else if (evt.data.hasOwnProperty('font')) {
@@ -34,23 +37,26 @@ messaging.peerSocket.onmessage = function(evt) {
   } else if (evt.data.hasOwnProperty('totps')) { //receive codes
     timeout = [];
     ui.updateUI("loaded", evt.data.totps);
-    if (ids.length === 0) { //don't double start animation
-      manageTimer("start");
-    }
+    manageTimer("start");
   }
 }
 
 messaging.peerSocket.onerror = function(err) {
-  console.log("Connection error: " + err.code + " - " + err.message);
+  console.error("Connection error: " + err.code + " - " + err.message);
   ui.updateUI("error");
 }
 
 function wake() {
   ui.resumeTimer();
+  let epoch = Math.round(new Date().getTime() / 1000.0);
+  getTokens(epoch);
 }
 
 function sleep() {
+  // Stop animating and asking for tokens
   ui.stopAnimation();
+  manageTimer("stop");
+  timeout = []; // Don't want to flash error when resuming
 }
 
 function getTokens(epoch) {
@@ -64,24 +70,29 @@ function getTokens(epoch) {
   timeout.push(epoch);
 }
 
+function checkTimer() {
+  setTimeout(function() {
+    if (timeout.length !== 0) {
+      //No msg received in 30s
+      ui.updateUI("error");
+    } 
+  }, 35000);   
+}
+
 function manageTimer(arg) {
   if (arg === "stop") {
+    ui.stopAnimation();
     for (let i of ids) {
-      ui.stopAnimation();
       clearInterval(i);
-    }
-    
-    setTimeout(function() {
-      if (timeout.length !== 0) {
-        //No msg received in 30s
-        ui.updateUI("error");
-      } 
-    }, 35000);   
+    } 
+    checkTimer();   
     ids = []; //empty array
   } else if (arg === "start") {
-    ui.resumeTimer();
-    let id = setInterval(timer, 1000);
-    ids.push(id);  
+    if (ids.length === 0) { //don't double start animation
+      ui.resumeTimer();
+      let id = setInterval(timer, 1000);
+      ids.push(id);  
+    }
   } else {
     console.error("Invalid timer management argument.")
   }
