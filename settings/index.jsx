@@ -7,7 +7,7 @@ function setDefaults(props) {
     props.settingsStorage.setItem('color', JSON.stringify(COLORS[0].value)); 
   } else if (!props.settings.font) {
     props.settingsStorage.setItem('font', JSON.stringify({"selected":[0],"values":[{"name":FONTS[0].name}]}));
-  } 
+  }
 };
 
 function mySettings(props) {

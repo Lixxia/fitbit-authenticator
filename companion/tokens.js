@@ -9,13 +9,21 @@ export function AuthToken() {
 
   try {
     this.tokens = JSON.parse(settingsStorage.getItem(TOKEN_SECRETS));
+    this.tokensList = JSON.parse(settingsStorage.getItem(TOKEN_LIST));
   } catch (e) {
-    console.error("Settings not found, intializing");
+    console.error("Settings not parseable, intializing");
     this.tokens = [];
+    this.tokensList = [];
   }
+  
   if (this.tokens === null || this.tokens === undefined) {
-    console.error("Settings not found, intializing");
+    console.error("Tokens secrets in settings is null, intializing");
     this.tokens = [];
+  } 
+  
+  if (this.tokensList === null || this.tokensList === undefined) {
+    console.error("Tokens list in settings is null, intializing");
+    this.tokensList = [];
   }
 }
 
@@ -87,9 +95,8 @@ AuthToken.prototype.reloadTokens = function(epoch) {
   if (this.tokens.length !== 0) {
     this.tokens = JSON.parse(settingsStorage.getItem(TOKEN_SECRETS)); //Ensure data is up to date
   }
-  let list = JSON.parse(settingsStorage.getItem(TOKEN_LIST)).length;
   
-  if (list > this.tokens.length) {
+  if (this.tokensList.length > this.tokens.length) {
     console.error("Missing token, re-parse token_list");
     this.newToken(JSON.parse(settingsStorage.getItem(TOKEN_LIST))); // Re-parse
     this.tokens = JSON.parse(settingsStorage.getItem(TOKEN_SECRETS)); // Update list again so we don't send old data

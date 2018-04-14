@@ -6,7 +6,7 @@ let ui = new AuthUI();
 const ids = [];
 const timeout = [];
 
-timeout.push("Start");
+timeout.push("Startup");
 checkTimer(); 
 
 display.addEventListener("change", function() {
@@ -37,7 +37,9 @@ messaging.peerSocket.onmessage = function(evt) {
   } else if (evt.data.hasOwnProperty('totps')) { //receive codes
     timeout = [];
     ui.updateUI("loaded", evt.data.totps);
-    manageTimer("start");
+    if (evt.data.totps.length !== 0) {
+      manageTimer("start"); 
+    }
   }
 }
 
@@ -47,9 +49,9 @@ messaging.peerSocket.onerror = function(err) {
 }
 
 function wake() {
-  ui.resumeTimer();
   let epoch = Math.round(new Date().getTime() / 1000.0);
   getTokens(epoch);
+  ui.updateUI("loading");
 }
 
 function sleep() {
@@ -73,10 +75,10 @@ function getTokens(epoch) {
 function checkTimer() {
   setTimeout(function() {
     if (timeout.length !== 0) {
-      //No msg received in 30s
+      //No msg received in 33s (token refresh + latency)
       ui.updateUI("error");
     } 
-  }, 35000);   
+  }, 33000);   
 }
 
 function manageTimer(arg) {
@@ -103,10 +105,12 @@ function timer() {
   let epoch = Math.round(new Date().getTime() / 1000.0);
   let countDown = 30 - (epoch % 30);
   if (epoch % 30 == 0) {
+    ui.updateTextTimer("...");
     getTokens(epoch);
     manageTimer("stop");
+  } else {
+    ui.updateTextTimer(countDown);
   }
-  ui.updateTextTimer(countDown);
 }
 
 //Test Codes

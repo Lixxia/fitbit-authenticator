@@ -25,8 +25,9 @@ export function AuthUI() {
 
 AuthUI.prototype.updateUI = function(state, totps) {
   this.statusBg.style.display = "none";
+  this.loadingAnim.style.display = "none";
+  
   if (state === "loaded") {
-    this.loadingAnim.style.display = "none";
     if (totps.length === 0) {
       this.updateUI("none");
       return;
@@ -44,6 +45,8 @@ AuthUI.prototype.updateUI = function(state, totps) {
     this.stopAnimation();
 
     if (state === "loading") {
+      this.loadingAnim.style.display = "inline";
+      this.loadingAnim.animate("enable");
       this.statusText.text = "LOADING TOKENS";
     }
     else if (state === "none") {
@@ -119,7 +122,7 @@ AuthUI.prototype.startProgress = function(num) {
   let updateInterval = 1;
   let bar = this.prog[num];
   let self = this;
-  let id = setInterval(frame, 9);
+  let id = setInterval(frame, 13);
   this.ids.push(id);
   
   function frame() {

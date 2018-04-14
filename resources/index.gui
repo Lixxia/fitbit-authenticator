@@ -48,7 +48,7 @@
   <!-- Startup Screen-->
   <rect id="status-bg"/>
   <g id="loading-anim" transform="translate(50%,50%)">
-    <animateTransform attributeType="rotate" from="0" to="360" begin="load" dur="5" repeatCount="8" final="keep"/>
+    <animateTransform attributeType="rotate" from="0" to="360" begin="load;enable" dur="5" repeatCount="8" final="keep"/>
     <image x="$-100" y="$-100" width="200" height="200" href="loading.png" load="sync"/>
   </g>
   
@@ -57,7 +57,7 @@
   
   <!--   Text Counter -->
   <circle id="time-bg"/>
-  <text id="time-left">0</text>
+  <text id="time-left">...</text>
 
   <!--   Progress Transparency Fix -->
   <line id="prog0-fix" class="fix" />
@@ -75,5 +75,4 @@
   <line id="prog1" class="progress" />
   <line id="prog2" class="progress" />
   <line id="prog3" class="progress" />
-  
 </svg>
