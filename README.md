@@ -11,6 +11,10 @@ If the app is uninstalled all associated data is removed. *Please do not use thi
 Configuration is offered for changing the color, changing the font and displaying a text-based counter.
 The settings also support removal and re-order of the tokens.
 
+# Fitbit App 
+
+Get it here: https://gam.fitbit.com/gallery/app/ff58cce2-1f9d-4a2f-917d-3cb70c11b542
+
 # References
 
 - jsSHA library used from [jsSHA](http://caligatio.github.com/jsSHA/)
