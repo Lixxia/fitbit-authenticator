@@ -7,6 +7,8 @@ function setDefaults(props) {
     props.settingsStorage.setItem('color', JSON.stringify(COLORS[0].value)); 
   } else if (!props.settings.font) {
     props.settingsStorage.setItem('font', JSON.stringify({"selected":[0],"values":[{"name":FONTS[0].name}]}));
+  } else if (!props.settings.display_always) {
+    props.settingsStorage.setItem('display_always', "false");
   }
 };
 
@@ -39,12 +41,15 @@ function mySettings(props) {
               action="Add Token"
             />
           }
-        />
-        
+        />        
       </Section>
       
       <Section
         title={<Text bold align="center">Appearance</Text>}>
+        <Toggle
+          settingsKey="display_always"
+          label="Always on display"
+        />
         <Toggle
           settingsKey="text_toggle"
           label="Show Text Counter"

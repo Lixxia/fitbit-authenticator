@@ -108,7 +108,7 @@ AuthToken.prototype.reloadTokens = function(epoch) {
       totps.totps.push({"name":this.tokens[j]["name"],"totp":this.totpObj.getOTP(this.tokens[j]["token"], epoch)});
     }
   }
-  console.log("totp sent.");
+  console.log(`totp sent.`);
   return totps;
 }
 

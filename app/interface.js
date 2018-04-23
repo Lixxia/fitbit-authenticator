@@ -1,6 +1,7 @@
 import {TOKEN_NUM,COLORS,FONTS} from "../common/globals.js";
 import document from "document";
 import { me as device } from "device";
+import { monoDigits } from "../common/util.js"
 
 export function AuthUI() {
   this.tokenList = document.getElementById("tokenList");
@@ -79,7 +80,8 @@ AuthUI.prototype.updateTokens = function(totps) {
     }
  
     tile.style.display = "inline";
-    tile.getElementById("totp").text = token_val; 
+    let display_totp = monoDigits(token_val);
+    tile.getElementById("totp").text = display_totp.slice(0,3) + " " + display_totp.slice(3,6); 
     tile.getElementById("totp-name").text = token_name;    
   }
 }

@@ -34,6 +34,12 @@ messaging.peerSocket.onmessage = function(evt) {
     getTokens(epoch);
   } else if (evt.data.hasOwnProperty('text_toggle')) {
     ui.updateCounter(evt.data.text_toggle);
+  } else if (evt.data.hasOwnProperty('display_always')) {
+    if (evt.data.display_always === true) {
+      display.autoOff = false;
+    } else {
+      display.autoOff = true;
+    }
   } else if (evt.data.hasOwnProperty('totps')) { //receive codes
     timeout = [];
     ui.updateUI("loaded", evt.data.totps);

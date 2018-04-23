@@ -15,6 +15,14 @@ The settings also support removal and re-order of the tokens.
 
 Get it here: https://gam.fitbit.com/gallery/app/ff58cce2-1f9d-4a2f-917d-3cb70c11b542
 
+# Support
+
+If you experience any issues please feel free to create an issue. If you'd prefer to email me you can do so [here](mailto:lixxiadev@gmail.com).
+
+# Changelog
+
+For a list of all changes please click [here](CHANGELOG.md).
+
 # References
 
 - jsSHA library used from [jsSHA](http://caligatio.github.com/jsSHA/)

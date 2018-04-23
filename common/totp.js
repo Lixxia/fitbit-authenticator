@@ -21,15 +21,33 @@ export function TOTP() {
     let base32chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
     let bits = "";
     let hex = "";
-    for (let i=0; i<base32.length; i++) {
-        let val = base32chars.indexOf(base32.charAt(i).toUpperCase());
-        if ( val >= 0 && val < 32 ) {
-          bits += leftpad(val.toString(2), 5, '0');
-        } else {
-          throw Error("Character out of range: " + base32.charAt(i));
-        }
+    let i;
+    
+    base32 = base32.replace(/ +/g, ""); // Strip whitespace
+    
+    for (i=0; i<base32.length; i++) {
+      let char = base32.charAt(i).toUpperCase();
+      if (char === '0') {
+          char = 'O';
+      } else if (char === '8') {
+          char = 'B';
+      } else if (char === '1') {
+          char = 'L';
+      }
+      let val = base32chars.indexOf(char);
+      if ( val >= 0 && val < 32 ) {
+        bits += leftpad(val.toString(2), 5, '0');
+      } else {
+        throw Error("Character out of range: " + char);
+      }
     }
-    for (let i=0; i+4<=bits.length; i+=4) {
+    
+    // Padding to avoid 'String of HEX type must be in byte increments' error.
+    for (i = i % 8; i > 0; i--) {
+      bits += leftpad('0', 5, '0');
+    }
+    
+    for (i=0; i+4<=bits.length; i+=4) {
       let chunk = bits.substr(i, 4);
       hex = hex + parseInt(chunk, 2).toString(16) ;
     }
