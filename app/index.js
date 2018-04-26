@@ -5,6 +5,7 @@ import { display } from "display";
 let ui = new AuthUI();
 const ids = [];
 const timeout = [];
+var groups = 1;
 
 timeout.push("Startup");
 checkTimer(); 
@@ -34,6 +35,10 @@ messaging.peerSocket.onmessage = function(evt) {
     getTokens(epoch);
   } else if (evt.data.hasOwnProperty('text_toggle')) {
     ui.updateCounter(evt.data.text_toggle);
+  } else if (evt.data.hasOwnProperty('groups')) {
+    groups = parseInt(evt.data.groups.selected);
+    let epoch = Math.round(new Date().getTime() / 1000.0);
+    getTokens(epoch);
   } else if (evt.data.hasOwnProperty('display_always')) {
     if (evt.data.display_always === true) {
       display.autoOff = false;
@@ -42,7 +47,7 @@ messaging.peerSocket.onmessage = function(evt) {
     }
   } else if (evt.data.hasOwnProperty('totps')) { //receive codes
     timeout = [];
-    ui.updateUI("loaded", evt.data.totps);
+    ui.updateUI("loaded", evt.data.totps, groups);
     if (evt.data.totps.length !== 0) {
       manageTimer("start"); 
     }
@@ -121,4 +126,5 @@ function timer() {
 
 //Test Codes
 //ZVZG5UZU4D7MY4DH
+//test:ZVZG 5UZU 4D7M Y4DH ZVZG ZVZG AB
 //JBSWY3DPEHPK3PXP

@@ -24,7 +24,7 @@ export function AuthUI() {
   }
 }
 
-AuthUI.prototype.updateUI = function(state, totps) {
+AuthUI.prototype.updateUI = function(state, totps, groups) {
   this.statusBg.style.display = "none";
   this.loadingAnim.style.display = "none";
   
@@ -39,7 +39,7 @@ AuthUI.prototype.updateUI = function(state, totps) {
       p.style.visibility = "visible";
     }
 
-    this.updateTokens(totps);
+    this.updateTokens(totps, groups);
   }
   else {
     this.tokenList.style.display = "none";
@@ -63,7 +63,7 @@ AuthUI.prototype.updateTextTimer = function(time) {
   document.getElementById("time-left").text = time;
 }
 
-AuthUI.prototype.updateTokens = function(totps) {
+AuthUI.prototype.updateTokens = function(totps, groups) {
   for (let i=0; i<TOKEN_NUM; i++) {
     let tile = this.tiles[i];
     
@@ -81,7 +81,20 @@ AuthUI.prototype.updateTokens = function(totps) {
  
     tile.style.display = "inline";
     let display_totp = monoDigits(token_val);
-    tile.getElementById("totp").text = display_totp.slice(0,3) + " " + display_totp.slice(3,6); 
+    
+    switch (groups) {
+      case 0:
+        tile.getElementById("totp").text = display_totp;
+        break;
+      case 1:
+        tile.getElementById("totp").text = display_totp.slice(0,3) + " " + display_totp.slice(3,6);
+        break;
+      case 2:
+        tile.getElementById("totp").text = display_totp.slice(0,2) + " " + display_totp.slice(2,4) + " " + display_totp.slice(4,6);
+        break;
+      default:
+        tile.getElementById("totp").text = display_totp.slice(0,3) + " " + display_totp.slice(3,6);
+    }
     tile.getElementById("totp-name").text = token_name;    
   }
 }

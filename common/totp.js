@@ -16,11 +16,29 @@ export function TOTP() {
     }
     return s;
   };
+  
+  var parsehex = function(bits) {
+    let hex = "";
+    for (let i=0; i+4<=bits.length; i+=4) {
+      let chunk = bits.substr(i, 4);
+      hex = hex + parseInt(chunk, 2).toString(16) ;
+    }
+    return hex;
+  };
 
+  var hexpad = function(bits) {
+    // Padding to avoid 'String of HEX type must be in byte increments' error.
+    let i = bits.length;
+    
+    for (i = i % 8; i > 0; i--) {
+      bits += leftpad('0', 5, '0');
+    }
+    return parsehex(bits);
+  };
+  
   var base32tohex = function(base32) {
     let base32chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
     let bits = "";
-    let hex = "";
     let i;
     
     base32 = base32.replace(/ +/g, ""); // Strip whitespace
@@ -42,16 +60,13 @@ export function TOTP() {
       }
     }
     
-    // Padding to avoid 'String of HEX type must be in byte increments' error.
-    for (i = i % 8; i > 0; i--) {
-      bits += leftpad('0', 5, '0');
-    }
+    let hex = parsehex(bits);
     
-    for (i=0; i+4<=bits.length; i+=4) {
-      let chunk = bits.substr(i, 4);
-      hex = hex + parseInt(chunk, 2).toString(16) ;
+    if (hex.length % 2 !== 0) {
+      return hexpad(bits);
+    } else {
+      return hex;
     }
-    return hex;
   };
 
   this.getOTP = function(secret, epoch) {

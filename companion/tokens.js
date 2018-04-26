@@ -31,8 +31,6 @@ AuthToken.prototype.newToken = function(newVal) {
   let tokens = JSON.parse(settingsStorage.getItem(TOKEN_LIST));
   let rejectNames = settings.checkUniqueNames(newVal);
   
- 
-  
   if ( ! newVal[newVal.length-1]["name"].split(":")[0]) { 
     console.error("Name cannot be empty.");
     settings.revokeLast(TOKEN_LIST, tokens); 
@@ -60,7 +58,8 @@ AuthToken.prototype.newToken = function(newVal) {
 }
 
 AuthToken.prototype.validateToken = function(token) {
-  if (! token) return false;
+  if (! token) return false; // Doesn't exist
+  if (token.length < 16) return false; // Too short
   
   try {
     this.totpObj.getOTP(token);
@@ -92,6 +91,11 @@ AuthToken.prototype.reorderTokens = function(tokens) {
 }  
 
 AuthToken.prototype.reloadTokens = function(epoch) {
+  // Sometiems we just need to reload, in this case calculate epoch
+  if (epoch === undefined) {
+    epoch = Math.round(new Date().getTime() / 1000.0);
+  }
+  
   if (this.tokens.length !== 0) {
     this.tokens = JSON.parse(settingsStorage.getItem(TOKEN_SECRETS)); //Ensure data is up to date
   }

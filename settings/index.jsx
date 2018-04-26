@@ -9,6 +9,8 @@ function setDefaults(props) {
     props.settingsStorage.setItem('font', JSON.stringify({"selected":[0],"values":[{"name":FONTS[0].name}]}));
   } else if (!props.settings.display_always) {
     props.settingsStorage.setItem('display_always', "false");
+  } else if (!props.settings.groups) {
+    props.settingsStorage.setItem('groups', JSON.stringify({"selected":[1], "values":[{"name":"Two (123 456)","value":"1"}]}));
   }
 };
 
@@ -59,8 +61,17 @@ function mySettings(props) {
           settingsKey="font"
           options={FONTS}
         />
+        <Select
+          label="Token Display Grouping"
+          settingsKey="groups"
+          options={[
+            {name: "None (123456)", value:"1"},
+            {name: "Two (123 456)", value: "2"},
+            {name: "Three (12 34 56)", value: "3"}
+          ]}
+        />
         <ColorSelect
-            title="Progress Bar Color"
+            title="Font Color"
             settingsKey="color"
             colors={COLORS}
         />

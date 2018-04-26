@@ -23,7 +23,7 @@ messaging.peerSocket.onmessage = function(evt) {
 }
 
 settingsStorage.onchange = evt => {
-  if (evt.key === "color" || evt.key === "progress_toggle" || evt.key === "text_toggle" || evt.key === "font" || evt.key === "display_always") { //simple setting
+  if (evt.key === "color" || evt.key === "progress_toggle" || evt.key === "text_toggle" || evt.key === "font" || evt.key === "display_always" || evt.key === "groups") { //simple setting
     sendVal(settings.singleSetting(evt.key, evt.newValue));
   } else if (evt.oldValue !== null && evt.oldValue.length === evt.newValue.length) { //reorder
     token.reorderTokens(settings.reorderItems(evt.newValue));
