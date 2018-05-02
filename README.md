@@ -4,12 +4,16 @@ Authenticator application to generate TOTP codes on FitbitOS.
 
 ![](Authenticator-screenshot1.png) ![](Authenticator-screenshot2.png)
 
-This app currently supports storing up to 10 tokens. Each token is submitted in the form `name:key` and must have a unique name. Due to hardware constraints on the watch, the TOTP calculations must be done on the companion app which runs on the phone. Upon submission of the secret key the data is stored on the phone and stripped from the visible settings. Every 30 seconds the watch requests the new translated tokens from the phone, these are calculated on the companion and sent back to the watch via fitbit's [Messaging API](https://dev.fitbit.com/build/reference/companion-api/messaging/). 
+This app currently supports storing up to 10 tokens. Each token is submitted in the form `name:key` and must have a unique name. Due to hardware/software constraints on the watch, the TOTP calculations must be done on the companion app which runs on the phone. Upon submission of the secret key the data is stored on the phone and stripped from the visible settings. Every 30 seconds the watch requests the new translated tokens from the phone, these are calculated on the companion and sent back to the watch via Fitbit's [Messaging API](https://dev.fitbit.com/build/reference/companion-api/messaging/). 
 
 If the app is uninstalled all associated data is removed. *Please do not use this as your sole source of accessing these MFA tokens*
 
 Configuration is offered for changing the color, changing the font and displaying a text-based counter.
 The settings also support removal and re-order of the tokens.
+
+## Keeping Things on the Watch
+
+I would much prefer for everything to be stored and calculated on the watch (but cannot for reasons stated above), in pursuit of this I have opened up a [feature request](https://community.fitbit.com/t5/Feature-Suggestions/Device-crypto-support/idi-p/2677127) on the Fitbit forums. If you'd like to see this please vote!
 
 # Fitbit App 
 
