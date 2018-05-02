@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.2 - 05/01/2018
+
+- Fixed an issue where if an item was deleted from the settings while the companion wasn't running, it would not properly update the secrets data.
+
 ## 1.2.1 - 04/26/2018
 
 - Added settings for choosing number groupings (none, one, or two)

@@ -60,3 +60,4 @@ function sendVal(data) {
     console.error("Unable to send data");
   }
 }
+

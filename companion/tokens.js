@@ -6,7 +6,11 @@ import * as settings from "./settings.js";
 
 export function AuthToken() {
   this.totpObj = new TOTP();
+  
+  this.reloadSettings();
+}
 
+AuthToken.prototype.reloadSettings = function() {
   try {
     this.tokens = JSON.parse(settingsStorage.getItem(TOKEN_SECRETS));
     this.tokensList = JSON.parse(settingsStorage.getItem(TOKEN_LIST));
@@ -16,36 +20,36 @@ export function AuthToken() {
     this.tokensList = [];
   }
   
-  if (this.tokens === null || this.tokens === undefined) {
+  if (this.tokens === null || typeof this.tokens === "undefined") {
     console.error("Tokens secrets in settings is null, intializing");
     this.tokens = [];
-  } 
+  }
   
-  if (this.tokensList === null || this.tokensList === undefined) {
+  if (this.tokensList === null || typeof this.tokensList === "undefined") {
     console.error("Tokens list in settings is null, intializing");
     this.tokensList = [];
   }
 }
 
 AuthToken.prototype.newToken = function(newVal) {
-  let tokens = JSON.parse(settingsStorage.getItem(TOKEN_LIST));
+  this.reloadSettings();
   let rejectNames = settings.checkUniqueNames(newVal);
   
   if ( ! newVal[newVal.length-1]["name"].split(":")[0]) { 
     console.error("Name cannot be empty.");
-    settings.revokeLast(TOKEN_LIST, tokens); 
+    settings.revokeLast(TOKEN_LIST, this.tokensList); 
     return;
   } else if (newVal[newVal.length-1]["name"].indexOf(':') === -1) {
     console.error("Delimeter not found, removing latest user submission.");
-    settings.revokeLast(TOKEN_LIST, tokens);
+    settings.revokeLast(TOKEN_LIST, this.tokensList);
     return;
   } else if ( rejectNames.length > 0 ) {
     console.error("Item already exists, removing latest user submission.");
-    settings.revokeLast(TOKEN_LIST, tokens);
+    settings.revokeLast(TOKEN_LIST, this.tokensList);
     return;
   } else if ( ! this.validateToken(newVal[newVal.length-1]["name"].split(":")[1])) {
     console.error("Invalid token, removing latest user submission.");
-    settings.revokeLast(TOKEN_LIST, tokens);
+    settings.revokeLast(TOKEN_LIST, this.tokensList);
     return;
   }
 
@@ -71,6 +75,7 @@ AuthToken.prototype.validateToken = function(token) {
 }
 
 AuthToken.prototype.reorderTokens = function(tokens) {
+  this.reloadSettings();
   let newOrder = [];
   let fileOrder = [];
   let newTokens = [];
@@ -92,19 +97,21 @@ AuthToken.prototype.reorderTokens = function(tokens) {
 
 AuthToken.prototype.reloadTokens = function(epoch) {
   // Sometiems we just need to reload, in this case calculate epoch
-  if (epoch === undefined) {
+  if (typeof epoch === "undefined") {
     epoch = Math.round(new Date().getTime() / 1000.0);
   }
   
-  if (this.tokens.length !== 0) {
-    this.tokens = JSON.parse(settingsStorage.getItem(TOKEN_SECRETS)); //Ensure data is up to date
-  }
-  
+  this.reloadSettings();
   if (this.tokensList.length > this.tokens.length) {
     console.error("Missing token, re-parse token_list");
-    this.newToken(JSON.parse(settingsStorage.getItem(TOKEN_LIST))); // Re-parse
-    this.tokens = JSON.parse(settingsStorage.getItem(TOKEN_SECRETS)); // Update list again so we don't send old data
+    this.newToken(this.tokensList); // Re-parse
+    this.reloadSettings(); // Update list again so we don't send old data
+  } else if (this.tokensList.length < this.tokens.length) {
+    console.error("Tokens were deleted from the settings but not the backend. Deleting.");
+    this.deleteToken(settings.deleteItem(this.tokens, this.tokensList));
+    this.reloadSettings(); // Update list again so we don't send old data
   }
+  
   
   let totps = {"totps":[]};
   for (let j in this.tokens) {
@@ -116,12 +123,17 @@ AuthToken.prototype.reloadTokens = function(epoch) {
   return totps;
 }
 
-AuthToken.prototype.deleteToken = function(token) {
-  for (let i in this.tokens) {
-    if(this.tokens[i]["name"] === token.delete) {
-      this.tokens.splice(i, 1);
+AuthToken.prototype.deleteToken = function(toDelete) {
+  this.reloadSettings();
+  
+  for (let d in toDelete) { // In case of multiple items to be deleted
+    for (let i in this.tokens) {
+      if(toDelete.includes(this.tokens[i]["name"])) {
+        this.tokens.splice(i, 1);
+      }
     }
   }
+
   settingsStorage.setItem(TOKEN_SECRETS, JSON.stringify(this.tokens));
   return;
 }

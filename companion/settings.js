@@ -16,11 +16,10 @@ export function reorderItems(setting) {
 }
 
 export function deleteItem(oldVal,newVal) {
-  let deleteArr = {}
-
+  let deleteArr = [];
   if (newVal.length === 0) {
     //Delete only item
-    deleteArr["delete"] = oldVal[oldVal.length-1]["name"];
+    deleteArr.push(oldVal[oldVal.length-1]["name"]);
   } else {
     let newNames = [];
     let oldNames = [];
@@ -28,10 +27,9 @@ export function deleteItem(oldVal,newVal) {
     for (let o of oldVal) { oldNames.push(o["name"]); }
     for (let n of newVal) { newNames.push(n["name"]); }
 
-    let delItem = oldNames.filter(function(i) {
+    deleteArr = oldNames.filter(function(i) {
       return newNames.indexOf(i) < 0;
     });
-    deleteArr["delete"] = delItem[0];
   }
   return deleteArr;
 }
