@@ -6,6 +6,7 @@
   
     <text id="totp" class="totp">Token Display</text>
     <text id="totp-name">example@localhost.com</text>
+    <rect id="click-me" pointer-events="all"/>
   </symbol>
   
   <!--   Tile display list -->
@@ -44,6 +45,10 @@
       <use href="#tile-token" />
     </use>
   </use>
+    
+  <!--   Text Counter -->
+  <circle id="time-bg"/>
+  <text id="time-left">...</text>
   
   <!-- Startup Screen-->
   <rect id="status-bg"/>
@@ -54,10 +59,6 @@
   
   <!--   Info Text -->
   <textarea id="status" class="status">CONNECTING TO COMPANION</textarea>
-  
-  <!--   Text Counter -->
-  <circle id="time-bg"/>
-  <text id="time-left">...</text>
 
   <!--   Progress Transparency Fix -->
   <line id="prog0-fix" class="fix" />
@@ -75,4 +76,6 @@
   <line id="prog1" class="progress" />
   <line id="prog2" class="progress" />
   <line id="prog3" class="progress" />
+  
+  
 </svg>

@@ -16,3 +16,7 @@ export function hex2a(hex) {
   }
   return str.toString();
 }
+
+export function epoch() {
+  return Math.round(new Date().getTime() / 1000.0);
+}

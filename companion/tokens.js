@@ -19,7 +19,7 @@ AuthToken.prototype.reloadSettings = function() {
     this.tokens = [];
     this.tokensList = [];
   }
-  
+    
   if (this.tokens === null || typeof this.tokens === "undefined") {
     console.error("Tokens secrets in settings is null, intializing");
     this.tokens = [];
@@ -29,6 +29,7 @@ AuthToken.prototype.reloadSettings = function() {
     console.error("Tokens list in settings is null, intializing");
     this.tokensList = [];
   }
+  this.standalone = JSON.parse(settingsStorage.getItem("standalone"));
 }
 
 AuthToken.prototype.newToken = function(newVal) {
@@ -97,7 +98,7 @@ AuthToken.prototype.reorderTokens = function(tokens) {
 
 AuthToken.prototype.reloadTokens = function(epoch) {
   // Sometiems we just need to reload, in this case calculate epoch
-  if (typeof epoch === "undefined") {
+  if (typeof epoch === "undefined" && !this.standalone) {
     epoch = Math.round(new Date().getTime() / 1000.0);
   }
   
@@ -112,6 +113,10 @@ AuthToken.prototype.reloadTokens = function(epoch) {
     this.reloadSettings(); // Update list again so we don't send old data
   }
   
+  if (this.standalone) {
+    console.log(`file sent`);
+    return this.tokens;
+  }
   
   let totps = {"totps":[]};
   for (let j in this.tokens) {

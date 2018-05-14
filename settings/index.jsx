@@ -1,16 +1,10 @@
-import {COLORS,FONTS} from "../common/globals.js";
+import { COLORS,FONTS,DEFAULT_SETTINGS } from "../common/globals.js";
 
 function setDefaults(props) {
-  if (!props.settings.text_toggle) {
-    props.settingsStorage.setItem('text_toggle', "false"); 
-  } else if (!props.settings.color) {
-    props.settingsStorage.setItem('color', JSON.stringify(COLORS[0].value)); 
-  } else if (!props.settings.font) {
-    props.settingsStorage.setItem('font', JSON.stringify({"selected":[0],"values":[{"name":FONTS[0].name}]}));
-  } else if (!props.settings.display_always) {
-    props.settingsStorage.setItem('display_always', "false");
-  } else if (!props.settings.groups) {
-    props.settingsStorage.setItem('groups', JSON.stringify({"selected":[1], "values":[{"name":"Two (123 456)","value":"1"}]}));
+  for (let key in DEFAULT_SETTINGS) {
+    if (!props.settings[key]) {
+      props.settingsStorage.setItem(key, JSON.stringify(DEFAULT_SETTINGS[key]));
+    }
   }
 };
 
@@ -76,6 +70,19 @@ function mySettings(props) {
             colors={COLORS}
         />
       </Section>
+      
+      <Section title={<Text bold align="center">[EXPERIMENTAL] Standalone Mode</Text>}>
+        <Text>This mode will instead display a list of all token names on the watch. Upon selecting a name, a token will be calculated locally on the watch and displayed.</Text>
+        <Text>Due to the device constraints only one token can be displayed/calculated at a time. There will be a delay of several seconds until the token is calculated.</Text>
+        <Text>Adding, deleting and reordering tokens is still managed by the settings page and a connection must be established in order to transmit the data.</Text>
+        <Text>Some settings changes may not be applied until the next 30 second interval.</Text>
+        <Text>The app is frozen during generation of tokens, due to this the progress bar is not calculated correctly. Recommended that this mode is used with the text counter.</Text>
+        <Toggle
+          settingsKey="standalone"
+          label="Standalone Mode"
+        /> 
+      </Section>
+      
       <Section title={<Text bold align="center">Support</Text>}>
         <Text>In some cases the companion may be unable to communicate with the watch. It's best to reopen the app/companion if this happens.</Text>
         <Text>If you experience any problems please contact me or create an issue on github!</Text>
@@ -86,7 +93,6 @@ function mySettings(props) {
           icon="https://raw.githubusercontent.com/Lixxia/fitbit-authenticator/master/resources/GitHub-Mark-64px.png"
           />
         </Link>
-        
       </Section>
     </Page>
 

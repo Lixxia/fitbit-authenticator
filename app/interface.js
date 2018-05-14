@@ -1,9 +1,14 @@
-import {TOKEN_NUM,COLORS,FONTS} from "../common/globals.js";
+import {TOKEN_NUM,COLORS,FONTS,SETTINGS_FILE} from "../common/globals.js";
+import { writeSettings } from "./cache.js";
 import document from "document";
+import { TOTP } from "../common/totp.js";
 import { me as device } from "device";
-import { monoDigits } from "../common/util.js"
+import { monoDigits, epoch } from "../common/util.js"
 
 export function AuthUI() {
+  this.totpObj = new TOTP();
+
+  
   this.tokenList = document.getElementById("tokenList");
   this.statusText = document.getElementById("status");
   this.loadingText = document.getElementById("loading-text");
@@ -14,7 +19,6 @@ export function AuthUI() {
   this.width = device.screen.width;
   this.height = device.screen.height;
   this.ids = [];
-
   this.tiles = [];
   for (let i=0; i<TOKEN_NUM; i++) {
     let tile = document.getElementById(`token-${i}`);
@@ -24,24 +28,27 @@ export function AuthUI() {
   }
 }
 
-AuthUI.prototype.updateUI = function(state, totps, groups) {
-  this.statusBg.style.display = "none";
+AuthUI.prototype.updateUI = function(state, totps, groups, index) {
+  this.statusBg.style.display = "inline";
   this.loadingAnim.style.display = "none";
   
   if (state === "loaded") {
+    this.statusBg.style.display = "none";
     if (totps.length === 0) {
       this.updateUI("none");
       return;
     } 
     this.tokenList.style.display = "inline";
     this.statusText.text = "";
-    for (let p of this.prog) {
-      p.style.visibility = "visible";
+    if (typeof index === "undefined") {
+      this.updateTokens(totps, groups);
+      for (let p of this.prog) {
+        p.style.visibility = "visible";
+      }
+    } else {
+      this.singleToken(totps, groups, index);
     }
-
-    this.updateTokens(totps, groups);
-  }
-  else {
+  } else {
     this.tokenList.style.display = "none";
     this.stopAnimation();
 
@@ -51,7 +58,7 @@ AuthUI.prototype.updateUI = function(state, totps, groups) {
       this.statusText.text = "LOADING TOKENS";
     }
     else if (state === "none") {
-      this.statusText.text = "No valid tokens, please add via settings."
+      this.statusText.text = "No valid tokens, please add via settings.";
     }
     else if (state === "error") {
       this.statusText.text = "An error has occured. Please ensure the companion is connected and restart the application.";
@@ -61,6 +68,49 @@ AuthUI.prototype.updateUI = function(state, totps, groups) {
 
 AuthUI.prototype.updateTextTimer = function(time) {
   document.getElementById("time-left").text = time;
+}
+
+AuthUI.prototype.groupSplit = function(display_totp, groups) {
+  switch (parseInt(groups)) {
+    case 0:
+      return display_totp;
+    case 1:
+      return display_totp.slice(0,3) + " " + display_totp.slice(3,6);
+    case 2:
+      return display_totp.slice(0,2) + " " + display_totp.slice(2,4) + " " + display_totp.slice(4,6);
+    default:
+      return display_totp.slice(0,3) + " " + display_totp.slice(3,6);
+  }
+}
+
+AuthUI.prototype.singleToken = function(totps, groups, index) {
+  for (let i=0; i<TOKEN_NUM; i++) {
+    let tile = this.tiles[i];
+    
+    if (!tile) {
+      continue;
+    }
+    
+    try {
+      const token_name = totps[i]["name"];
+    } catch (e) {
+      tile.style.display = "none";
+      continue;
+    }
+ 
+    tile.style.display = "inline";
+    if (i === index) {
+      const token_val = totps[index]["token"];
+      let display_totp = monoDigits(this.totpObj.getOTP(token_val, epoch()));
+      tile.getElementById("totp").text = this.groupSplit(display_totp,groups);
+      tile.getElementById("totp").style.fontSize = 50;
+      tile.getElementById("totp-name").text = token_name; 
+    } else {
+      tile.getElementById("totp").text = token_name;
+      tile.getElementById("totp").style.fontSize = 30;
+      tile.getElementById("totp-name").text = ""; 
+    }    
+  }
 }
 
 AuthUI.prototype.updateTokens = function(totps, groups) {
@@ -82,19 +132,8 @@ AuthUI.prototype.updateTokens = function(totps, groups) {
     tile.style.display = "inline";
     let display_totp = monoDigits(token_val);
     
-    switch (groups) {
-      case 0:
-        tile.getElementById("totp").text = display_totp;
-        break;
-      case 1:
-        tile.getElementById("totp").text = display_totp.slice(0,3) + " " + display_totp.slice(3,6);
-        break;
-      case 2:
-        tile.getElementById("totp").text = display_totp.slice(0,2) + " " + display_totp.slice(2,4) + " " + display_totp.slice(4,6);
-        break;
-      default:
-        tile.getElementById("totp").text = display_totp.slice(0,3) + " " + display_totp.slice(3,6);
-    }
+    tile.getElementById("totp").text = this.groupSplit(display_totp,groups)
+    tile.getElementById("totp").style.fontSize = 50;
     tile.getElementById("totp-name").text = token_name;    
   }
 }
@@ -113,7 +152,7 @@ AuthUI.prototype.updateColors = function(color) {
   time_bg.style.fill = COLORS[color].color;
 }
 
-AuthUI.prototype.updateFont = function(font) {
+AuthUI.prototype.updateFont = function(font) {  
   let texts = document.getElementsByTagName("text");
   for (let t in texts) {
     texts[t].style.fontFamily = FONTS[font].name;
@@ -185,8 +224,7 @@ AuthUI.prototype.clearProgress = function() {
 }
 
 AuthUI.prototype.resumeTimer = function() {
-  let epoch = Math.round(new Date().getTime() / 1000.0);
-  let catchUp = (epoch % 30) * 43;
+  let catchUp = (epoch() % 30) * 43;
   let i=0;
   this.clearProgress();
   while (catchUp > 0) {
