@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.2 - 07/25/2018
+
+- Added support for the Ionic
+- Changed loading icon to utilize built-in spinner
+- Reduced size of sha.js library (using sha1 specific variant)
+
 ## 1.2.2 - 05/01/2018
 
 - Fixed an issue where if an item was deleted from the settings while the companion wasn't running, it would not properly update the secrets data.

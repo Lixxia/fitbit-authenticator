@@ -5,5 +5,6 @@
     <link rel="import" href="/mnt/sysassets/widgets/baseview_widget.gui"/>
     <link rel="import" href="/mnt/sysassets/widgets/scrollview_widget.gui"/>
     <link rel="import" href="/mnt/sysassets/widgets/tile_list_widget.gui"/>  
+    <link rel="import" href="/mnt/sysassets/widgets/spinner_widget.gui" />
   </defs>
 </svg>

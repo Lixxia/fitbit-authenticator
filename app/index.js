@@ -116,7 +116,7 @@ function timer() {
   let epoch = Math.round(new Date().getTime() / 1000.0);
   let countDown = 30 - (epoch % 30);
   if (epoch % 30 == 0) {
-    ui.updateTextTimer("...");
+    ui.updateTextTimer("loading");
     getTokens(epoch);
     manageTimer("stop");
   } else {

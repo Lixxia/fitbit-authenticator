@@ -8,6 +8,8 @@ export function AuthUI() {
   this.statusText = document.getElementById("status");
   this.loadingText = document.getElementById("loading-text");
   this.loadingAnim = document.getElementById("loading-anim");
+  this.spinnerCenter = document.getElementById("spinner-center");
+  this.spinnerCorner = document.getElementById("spinner-corner");
   this.statusBg = document.getElementById("status-bg");
   this.prog = ['0','1','2','3'].map(num => document.getElementById(`prog${num}`));
   this.prog_bg = ['0','1','2','3'].map(num => document.getElementById(`prog${num}-bg`));
@@ -26,9 +28,9 @@ export function AuthUI() {
 
 AuthUI.prototype.updateUI = function(state, totps, groups) {
   this.statusBg.style.display = "none";
-  this.loadingAnim.style.display = "none";
-  
+
   if (state === "loaded") {
+    this.spinnerCenter.state = "disabled";
     if (totps.length === 0) {
       this.updateUI("none");
       return;
@@ -46,8 +48,7 @@ AuthUI.prototype.updateUI = function(state, totps, groups) {
     this.stopAnimation();
 
     if (state === "loading") {
-      this.loadingAnim.style.display = "inline";
-      this.loadingAnim.animate("enable");
+      this.spinnerCenter.state = "enabled";
       this.statusText.text = "LOADING TOKENS";
     }
     else if (state === "none") {
@@ -60,7 +61,13 @@ AuthUI.prototype.updateUI = function(state, totps, groups) {
 }
 
 AuthUI.prototype.updateTextTimer = function(time) {
-  document.getElementById("time-left").text = time;
+  if (time === "loading") {
+    this.spinnerCorner.state = "enabled";
+    document.getElementById("time-left").text = "";
+  } else {
+    this.spinnerCorner.state = "disabled";
+    document.getElementById("time-left").text = time;
+  }
 }
 
 AuthUI.prototype.updateTokens = function(totps, groups) {

@@ -76,9 +76,9 @@
 .status {
   text-anchor: middle;
   display-align: center;
-  x: 18%;
+  x: 10%;
   y: 30%;
-  width: 190;
+  width: 80%;
   height: 190;
   text-length:512;
   font-size: 32;
@@ -101,8 +101,8 @@
 }
 
 #spinner-corner { 
-  x: 90%-15; 
-  y: 90%-15; 
+  x: 90%-10; 
+  y: 90%-20; 
   width: 30; 
   height: 30; 
   fill: fb-white; 
