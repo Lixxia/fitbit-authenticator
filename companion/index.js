@@ -16,24 +16,23 @@ messaging.peerSocket.onclose = () => {
   console.log("Companion Socket Closed");
 };
 
-messaging.peerSocket.onmessage = function(evt) {
-  if (evt.data && evt.data.tokenRequest) {
-    sendVal(token.reloadTokens(evt.data.tokenRequest));
-  }
-}
+//messaging.peerSocket.onmessage = function(evt) {
+//  if (evt.data && evt.data.tokenRequest) {
+//    sendVal(token.reloadTokens(evt.data.tokenRequest));
+//  }
+//}
 
 settingsStorage.onchange = evt => {
   if (evt.key === "color" || evt.key === "progress_toggle" || evt.key === "text_toggle" || evt.key === "font" || evt.key === "display_always" || evt.key === "groups") { //simple setting
     sendVal(settings.singleSetting(evt.key, evt.newValue));
   } else if (evt.oldValue !== null && evt.oldValue.length === evt.newValue.length) { //reorder
-    token.reorderTokens(settings.reorderItems(evt.newValue));
-    sendVal(token.reloadTokens());
+    sendVal(settings.reorderItems(evt.newValue));
   } else if (evt.oldValue !== null && evt.newValue.length < evt.oldValue.length) { //delete
-    token.deleteToken(settings.deleteItem(JSON.parse(evt.oldValue),JSON.parse(evt.newValue)));
-    sendVal(token.reloadTokens());
+    sendVal(settings.deleteItem(JSON.parse(evt.oldValue),JSON.parse(evt.newValue)));
   } else { // new token sent
-    token.newToken(JSON.parse(evt.newValue));
-    sendVal(token.reloadTokens());
+    console.log("settings newval " + JSON.stringify(evt.newValue));
+    sendVal(token.newToken(JSON.parse(evt.newValue)));
+    settings.stripTokens();
   }
 };
 
@@ -41,15 +40,13 @@ settingsStorage.onchange = evt => {
 function restoreSettings() { 
   for (let index = 0; index < settingsStorage.length; index++) {
     let key = settingsStorage.key(index);
-    // Skip token_list is only names, token_secrets is secret
-    if (key && key !== "token_list" && key !== "token_secrets") {
+    // Skip token_list is only names
+    if (key && key !== "token_list") {
       let data = {};
       data[key] = JSON.parse(settingsStorage.getItem(key));
       sendVal(data);
     }  
   }
-  // Send calculated tokens at the end
-  sendVal(token.reloadTokens());
 }
 
 // Send data to device using Messaging API

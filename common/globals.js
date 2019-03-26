@@ -1,5 +1,5 @@
 export const TOKEN_LIST = "token_list"; //displayed in settings
-export const TOKEN_SECRETS = "token_secrets"; //stored internally
+export const FILE_NAME = "tokens.json";
 export const TOKEN_NUM = 10;
 
 export const COLORS = [

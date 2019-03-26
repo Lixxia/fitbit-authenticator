@@ -1,7 +1,7 @@
 import {TOKEN_NUM,COLORS,FONTS} from "../common/globals.js";
+import {TOTP} from "../common/totp.js";
 import document from "document";
 import { me as device } from "device";
-import { monoDigits } from "../common/util.js"
 
 export function AuthUI() {
   this.tokenList = document.getElementById("tokenList");
@@ -28,6 +28,7 @@ export function AuthUI() {
 
 AuthUI.prototype.updateUI = function(state, totps, groups) {
   this.statusBg.style.display = "none";
+  console.log("update ui called - " + state + "totps " + JSON.stringify(totps) + " groups " + groups);
 
   if (state === "loaded") {
     this.spinnerCenter.state = "disabled";
@@ -70,7 +71,11 @@ AuthUI.prototype.updateTextTimer = function(time) {
   }
 }
 
+
 AuthUI.prototype.updateTokens = function(totps, groups) {
+  let totpObj = new TOTP();
+  let epoch = Math.round(new Date().getTime() / 1000.0);
+
   for (let i=0; i<TOKEN_NUM; i++) {
     let tile = this.tiles[i];
     
@@ -79,16 +84,18 @@ AuthUI.prototype.updateTokens = function(totps, groups) {
     }
     
     try {
-      const token_val = totps[i]["totp"];
-      const token_name = totps[i]["name"];
+      const token_val = totps.data[i]["token"];
+      const token_name = totps.data[i]["name"];
+      console.log("tv " + token_val + " tn " + token_name)
     } catch (e) {
       tile.style.display = "none";
       continue;
     }
- 
+
     tile.style.display = "inline";
-    let display_totp = monoDigits(token_val);
-    
+    //let display_totp = monoDigits(totpObj.getOTP(token_val));
+    let display_totp = totpObj.getOTP(token_val, epoch);
+
     switch (groups) {
       case 0:
         tile.getElementById("totp").text = display_totp;
@@ -123,7 +130,8 @@ AuthUI.prototype.updateColors = function(color) {
 AuthUI.prototype.updateFont = function(font) {
   let texts = document.getElementsByTagName("text");
   for (let t in texts) {
-    texts[t].style.fontFamily = FONTS[font].name;
+    //texts[t].style.fontFamily = FONTS[font].name;
+    texts[t].style["font-family"] = FONTS[font].name;
   }
 }
 

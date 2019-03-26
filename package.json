@@ -1,8 +1,8 @@
 {
   "fitbit": {
-    "appUUID": "ff58cce2-1f9d-4a2f-917d-3cb70c11b542",
+    "appUUID": "b853f37e-1951-4720-88c3-07d1587f694d",
     "appType": "app",
-    "appDisplayName": "Authenticator",
+    "appDisplayName": "Authenticator Beta",
     "iconFile": "resources/icon.png",
     "wipeColor": "#607d8b",
     "requestedPermissions": [],
@@ -12,8 +12,14 @@
     ],
     "i18n": {
       "en": {
-        "name": "Authenticator"
+        "name": "Authenticator Beta"
       }
     }
+  },
+  "scripts": {
+    "build": "fitbit-build"
+  },
+  "devDependencies": {
+    "@fitbit/sdk": "~3.0.0"
   }
 }

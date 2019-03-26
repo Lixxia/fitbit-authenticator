@@ -8,6 +8,8 @@ export function AuthToken() {
     console.error("File not found, initializing JSON.");
     this.file = {"data":[]};
   }
+
+  console.log("File contents " + JSON.stringify(this.file));
 }
 
 AuthToken.prototype.reorderTokens = function(tokens) {
