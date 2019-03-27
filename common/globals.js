@@ -1,6 +1,14 @@
 export const TOKEN_LIST = "token_list"; //displayed in settings
-export const FILE_NAME = "tokens.json";
+export const FILE_NAME = "tokens.json"; //internal token storage
 export const TOKEN_NUM = 10;
+
+export const DEFAULT_SETTINGS = {
+  color: "0",
+  font: {"selected":[0],"values":[{"name":"System-Regular"}]},
+  text_toggle: false,
+  groups: {"selected":[1],"values":[{"name":"Two (123 456)","value":"1"}]},
+  display_always: false
+};
 
 export const COLORS = [
   {color: "#001F3F", value: "0"}, //navy

@@ -2,6 +2,9 @@ import * as messaging from "messaging";
 import { AuthUI } from "./interface.js";
 import { display } from "display";
 import { AuthToken } from "./tokens.js";
+import { inbox } from "file-transfer"
+import { readFileSync } from "fs";
+import { DEFAULT_SETTINGS } from "../common/globals.js"
 
 let ui = new AuthUI();
 let token = new AuthToken();
@@ -9,11 +12,60 @@ let token = new AuthToken();
 const ids = [];
 var groups = 1;
 
+let settings = DEFAULT_SETTINGS;
+
+inbox.onnewfile = processInbox;
+
+function loadSettings()
+{   
+  try {
+    settings = readFileSync('settings.cbor', "cbor");
+    setDefaults();
+  } catch (e) {    
+    settings = DEFAULT_SETTINGS;
+  }
+ 
+  applySettings();
+}
+
+function setDefaults() {
+  for (let key in DEFAULT_SETTINGS) {
+    if (!settings.hasOwnProperty(key)) {
+      settings[key] = DEFAULT_SETTINGS[key];
+    }
+  }
+}
+
+function applySettings() {
+  ui.updateColors(settings.color);
+  ui.updateFont(settings.font.selected);
+  ui.updateCounter(settings.text_toggle);
+
+  if (settings.display_always) {
+    display.autoOff = false;
+  } else {
+    display.autoOff = true;
+  }
+
+  groups = settings.groups.selected;
+  ui.updateUI("rerender", null, groups);
+}
+
+function processInbox() {
+  let fileName;
+  while (fileName = inbox.nextFile()) {
+    if (fileName === 'settings.cbor') {
+      loadSettings();
+    }
+  } 
+} 
+
+// STARTUP TASKS
+loadSettings();
+
 try {
   const file = token.reloadTokens();
-  console.log("file found - starting UI");
   ui.updateUI("loaded", file, groups);
-  //ui.resumeTimer();
   manageTimer("start");
 } catch (e) {
   ui.updateUI("none");
@@ -29,32 +81,13 @@ display.addEventListener("change", function() {
 
 // Listen for the onopen event
 messaging.peerSocket.onopen = function() {
-  ui.updateUI("loading");
+  //ui.updateUI("loading");
   messaging.peerSocket.send("Open");
 }
 
 // Listen for the onmessage event
 messaging.peerSocket.onmessage = function(evt) {
-  if (evt.data.hasOwnProperty('color')) {
-    ui.updateColors(evt.data.color);
-  } else if (evt.data.hasOwnProperty('font')) {
-    ui.updateFont(evt.data.font.selected);
-    //re-render for font centering
-    console.log("UI update called for font render")
-    //ui.updateUI("loaded", token.reloadTokens(), groups);
-  } else if (evt.data.hasOwnProperty('text_toggle')) {
-    ui.updateCounter(evt.data.text_toggle);
-  } else if (evt.data.hasOwnProperty('groups')) {
-    groups = parseInt(evt.data.groups.selected);
-    console.log("UI update called for text grouping")
-    //ui.updateUI("loaded", token.reloadTokens(), groups);
-  } else if (evt.data.hasOwnProperty('display_always')) {
-    if (evt.data.display_always === true) {
-      display.autoOff = false;
-    } else {
-      display.autoOff = true;
-    }
-  } else if (evt.data.hasOwnProperty('reorder')) {
+  if (evt.data.hasOwnProperty('reorder')) {
     console.log("UI update called for reorder")
     ui.updateUI("loaded", token.reorderTokens(evt.data.reorder), groups);
   } else if (evt.data.hasOwnProperty('delete')) {

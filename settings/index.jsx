@@ -1,16 +1,10 @@
-import {COLORS,FONTS} from "../common/globals.js";
+import {COLORS,FONTS,DEFAULT_SETTINGS} from "../common/globals.js";
 
 function setDefaults(props) {
-  if (!props.settings.text_toggle) {
-    props.settingsStorage.setItem('text_toggle', "false"); 
-  } else if (!props.settings.color) {
-    props.settingsStorage.setItem('color', JSON.stringify(COLORS[0].value)); 
-  } else if (!props.settings.font) {
-    props.settingsStorage.setItem('font', JSON.stringify({"selected":[0],"values":[{"name":FONTS[0].name}]}));
-  } else if (!props.settings.display_always) {
-    props.settingsStorage.setItem('display_always', "false");
-  } else if (!props.settings.groups) {
-    props.settingsStorage.setItem('groups', JSON.stringify({"selected":[1], "values":[{"name":"Two (123 456)","value":"1"}]}));
+  for (let key in DEFAULT_SETTINGS) {
+    if (!props.settings[key]) {
+      props.settingsStorage.setItem(key, JSON.stringify(DEFAULT_SETTINGS[key]));
+    }
   }
 };
 

@@ -28,11 +28,23 @@ export function AuthUI() {
 
 AuthUI.prototype.updateUI = function(state, totps, groups) {
   this.statusBg.style.display = "none";
-  console.log("update ui called - " + state + "totps " + JSON.stringify(totps) + " groups " + groups);
+  console.log("update ui called - " + state + " totps " + JSON.stringify(totps) + " groups " + groups);
 
-  if (state === "loaded") {
+  if (state === "rerender") {
+    for (let i=0; i<TOKEN_NUM; i++) {
+      let tile = this.tiles[i];
+    
+      if (!tile) {
+        continue;
+      }
+    
+      tile.getElementById("totp").text = this.groupSplit(tile.getElementById("totp").textContent.split(' ').join(''), groups);
+      tile.getElementById("totp-name").text = tile.getElementById("totp-name").textContent;    
+    }
+  }
+  else if (state === "loaded") {
     this.spinnerCenter.state = "disabled";
-    if (totps.length === 0) {
+    if (totps.data.length === 0) {
       this.updateUI("none");
       return;
     } 
@@ -71,6 +83,19 @@ AuthUI.prototype.updateTextTimer = function(time) {
   }
 }
 
+AuthUI.prototype.groupSplit = function(display_totp, groups) {
+  switch (parseInt(groups)) {
+    case 0:
+      return display_totp;
+    case 1:
+      return display_totp.slice(0,3) + " " + display_totp.slice(3,6);
+    case 2:
+      return display_totp.slice(0,2) + " " + display_totp.slice(2,4) + " " + display_totp.slice(4,6);
+    default:
+      return display_totp.slice(0,3) + " " + display_totp.slice(3,6);
+  }
+}
+
 
 AuthUI.prototype.updateTokens = function(totps, groups) {
   let totpObj = new TOTP();
@@ -93,22 +118,9 @@ AuthUI.prototype.updateTokens = function(totps, groups) {
     }
 
     tile.style.display = "inline";
-    //let display_totp = monoDigits(totpObj.getOTP(token_val));
     let display_totp = totpObj.getOTP(token_val, epoch);
 
-    switch (groups) {
-      case 0:
-        tile.getElementById("totp").text = display_totp;
-        break;
-      case 1:
-        tile.getElementById("totp").text = display_totp.slice(0,3) + " " + display_totp.slice(3,6);
-        break;
-      case 2:
-        tile.getElementById("totp").text = display_totp.slice(0,2) + " " + display_totp.slice(2,4) + " " + display_totp.slice(4,6);
-        break;
-      default:
-        tile.getElementById("totp").text = display_totp.slice(0,3) + " " + display_totp.slice(3,6);
-    }
+    tile.getElementById("totp").text = this.groupSplit(display_totp,groups);
     tile.getElementById("totp-name").text = token_name;    
   }
 }
@@ -130,8 +142,8 @@ AuthUI.prototype.updateColors = function(color) {
 AuthUI.prototype.updateFont = function(font) {
   let texts = document.getElementsByTagName("text");
   for (let t in texts) {
-    //texts[t].style.fontFamily = FONTS[font].name;
-    texts[t].style["font-family"] = FONTS[font].name;
+    texts[t].style.fontFamily = FONTS[font].name;
+    //texts[t].style["font-family"] = FONTS[font].name;
   }
 }
 
