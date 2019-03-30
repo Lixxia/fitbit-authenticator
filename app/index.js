@@ -8,10 +8,9 @@ import { DEFAULT_SETTINGS } from "../common/globals.js"
 
 let ui = new AuthUI();
 let token = new AuthToken();
-
-const ids = [];
-var groups = 1;
-
+let ids = [];
+let groups = 1;
+let file;
 let settings = DEFAULT_SETTINGS;
 
 inbox.onnewfile = processInbox;
@@ -63,7 +62,7 @@ function processInbox() {
 loadSettings();
 
 try {
-  const file = token.reloadTokens();
+  file = token.reloadTokens();
   ui.updateUI("loaded", file, groups);
   manageTimer("start");
 } catch (e) {
@@ -87,17 +86,14 @@ messaging.peerSocket.onopen = function() {
 // Listen for the onmessage event
 messaging.peerSocket.onmessage = function(evt) {
   if (evt.data.hasOwnProperty('reorder')) {
-    console.log("UI update called for reorder")
     ui.updateUI("loaded", token.reorderTokens(evt.data.reorder), groups);
   } else if (evt.data.hasOwnProperty('delete')) {
-    console.log("UI update called for delete")
     ui.updateUI("loaded", token.deleteToken(evt.data.delete), groups);
   } else {
     if (file.data.length === 0) {
       manageTimer("start");
       //ui.resumeTimer(); //First token, begin animation
     }
-    console.log("first token: " + JSON.stringify(evt.data));
     ui.updateUI("loaded", token.writeToken(evt.data), groups);
   }
 }
@@ -108,15 +104,13 @@ messaging.peerSocket.onerror = function(err) {
 }
 
 function wake() {
-  console.log("I'm awake...");
   ui.updateUI("loading");
   ui.updateUI("loaded", token.reloadTokens(), groups);
   manageTimer("start");
 }
 
 function sleep() {
-  console.log("sleeping");
-  // Stop animating and asking for tokens
+  // Stop progress
   ui.stopAnimation();
   manageTimer("stop");
 }
@@ -146,7 +140,6 @@ function timer() {
   if (epoch % 30 == 0) {
     ui.updateTextTimer("loading");
     manageTimer("stop");
-    console.log("update ui called from timer")
     ui.updateUI("loaded", token.reloadTokens(), groups);
     manageTimer("start");
   } else {

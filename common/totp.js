@@ -70,6 +70,7 @@ export function TOTP() {
   };
 
   this.getOTP = function(secret, epoch) {
+    let otp;
     try {
       let time = leftpad(dec2hex(Math.floor(epoch / 30)), 16, "0");
       let hmacObj = new jsSHA("SHA-1", "HEX");
@@ -78,7 +79,7 @@ export function TOTP() {
       
       let hmac = hmacObj.getHMAC("HEX")
       let offset = hex2dec(hmac.substring(hmac.length - 1));
-      let otp = (hex2dec(hmac.substr(offset * 2, 8)) & hex2dec("7fffffff")) + "";
+      otp = (hex2dec(hmac.substr(offset * 2, 8)) & hex2dec("7fffffff")) + "";
       otp = (otp).substr(otp.length - 6, 6);
     } catch (error) {
       throw error;

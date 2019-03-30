@@ -22,8 +22,6 @@ AuthToken.prototype.reloadSettings = function() {
     console.error("Tokens list in settings is null, intializing");
     this.tokensList = [];
   }
-  
-  console.log("Reload settings " + JSON.stringify(this.tokensList));
 }
 
 AuthToken.prototype.newToken = function(newVal) {

@@ -8,8 +8,6 @@ export function AuthToken() {
     console.error("File not found, initializing JSON.");
     this.file = {"data":[]};
   }
-
-  console.log("File contents " + JSON.stringify(this.file));
 }
 
 AuthToken.prototype.reorderTokens = function(tokens) {
@@ -28,7 +26,6 @@ AuthToken.prototype.reorderTokens = function(tokens) {
   for (let name of newOrder) {
     newTokens.data.push(this.file.data[fileOrder.indexOf(name)]);
   }
-  console.log("newtokens " + JSON.stringify(newTokens));
   fs.writeFileSync(FILE_NAME, newTokens, "cbor");
   return newTokens;
 }  

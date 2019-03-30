@@ -28,7 +28,6 @@ export function AuthUI() {
 
 AuthUI.prototype.updateUI = function(state, totps, groups) {
   this.statusBg.style.display = "none";
-  console.log("update ui called - " + state + " totps " + JSON.stringify(totps) + " groups " + groups);
 
   if (state === "rerender") {
     for (let i=0; i<TOKEN_NUM; i++) {
@@ -100,6 +99,8 @@ AuthUI.prototype.groupSplit = function(display_totp, groups) {
 AuthUI.prototype.updateTokens = function(totps, groups) {
   let totpObj = new TOTP();
   let epoch = Math.round(new Date().getTime() / 1000.0);
+  let token_val;
+  let token_name;
 
   for (let i=0; i<TOKEN_NUM; i++) {
     let tile = this.tiles[i];
@@ -109,9 +110,8 @@ AuthUI.prototype.updateTokens = function(totps, groups) {
     }
     
     try {
-      const token_val = totps.data[i]["token"];
-      const token_name = totps.data[i]["name"];
-      console.log("tv " + token_val + " tn " + token_name)
+      token_val = totps.data[i]["token"];
+      token_name = totps.data[i]["name"];
     } catch (e) {
       tile.style.display = "none";
       continue;
@@ -164,7 +164,7 @@ AuthUI.prototype.startProgress = function(num) {
   let updateInterval = 1;
   let bar = this.prog[num];
   let self = this;
-  let id = setInterval(frame, 13);
+  let id = setInterval(frame, 10);
   this.ids.push(id);
   
   function frame() {

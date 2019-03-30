@@ -1,18 +1,19 @@
 {
   "fitbit": {
-    "appUUID": "b853f37e-1951-4720-88c3-07d1587f694d",
+    "appUUID": "ff58cce2-1f9d-4a2f-917d-3cb70c11b542",
     "appType": "app",
-    "appDisplayName": "Authenticator Beta",
+    "appDisplayName": "Authenticator",
     "iconFile": "resources/icon.png",
     "wipeColor": "#607d8b",
     "requestedPermissions": [],
     "buildTargets": [
       "meson",
-      "higgs"
+      "higgs",
+      "gemini"
     ],
     "i18n": {
       "en": {
-        "name": "Authenticator Beta"
+        "name": "Authenticator"
       }
     }
   },
@@ -20,6 +21,8 @@
     "build": "fitbit-build"
   },
   "devDependencies": {
-    "@fitbit/sdk": "~3.0.0"
-  }
+    "@fitbit/sdk": "~3.1.0",
+    "@fitbit/sdk-cli": "^1.0.1"
+  },
+  "dependencies": {}
 }

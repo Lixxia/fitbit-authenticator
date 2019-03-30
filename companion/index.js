@@ -11,20 +11,19 @@ let settingsCache = { };
 
 // Message socket opens
 messaging.peerSocket.onopen = () => {
-  console.log("Companion Socket Open");
+  console.warn("Companion Socket Open");
   restoreSettings();
 };
 
 // Message socket closes
 messaging.peerSocket.onclose = () => {
-  console.log("Companion Socket Closed");
+  console.warn("Companion Socket Closed");
 };
 
 function sendSettings() {
-  console.log("settings cache being sent " + JSON.stringify(settingsCache));
   outbox.enqueue('settings.cbor', cbor.encode(settingsCache))
-    .then(ft => console.log('settings sent'))
-    .catch(error => console.log("Error sending settings: " + error));
+    .then(ft => console.warn('Settings sent.'))
+    .catch(error => console.error("Error sending settings: " + error));
 }
 
 settingsStorage.onchange = evt => {
@@ -37,7 +36,6 @@ settingsStorage.onchange = evt => {
   } else if (evt.oldValue !== null && evt.newValue.length < evt.oldValue.length) { //delete
     sendVal(settings.deleteItem(JSON.parse(evt.oldValue),JSON.parse(evt.newValue)));
   } else { // new token sent
-    console.log("settings newval " + JSON.stringify(evt.newValue));
     sendVal(token.newToken(JSON.parse(evt.newValue)));
     settings.stripTokens();
   }
@@ -55,7 +53,7 @@ function restoreSettings() {
     }
     // Skip token_list is only names
     else if (key && key !== "token_list") {
-      var value = settingsStorage.getItem(key);
+      let value = settingsStorage.getItem(key);
       try {
         settingsCache[key] = JSON.parse(value);
       }
@@ -71,7 +69,7 @@ function sendVal(data) {
   if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
     messaging.peerSocket.send(data);
   } else {
-    console.error("Unable to send data");
+    console.error("Unable to send data.");
   }
 }
 

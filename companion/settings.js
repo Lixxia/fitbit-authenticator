@@ -35,11 +35,11 @@ export function deleteItem(oldVal,newVal) {
 }
 
 export function checkUniqueNames(newArray) {
-  var testArray = {};
-  var duplicates = [];
+  let testArray = {};
+  let duplicates = [];
 
   newArray.map(function(item) {
-    var itemName = item["name"].split(":")[0];
+    let itemName = item["name"].split(":")[0];
     if (itemName in testArray) {
       testArray[itemName].duplicate = true;
       item.duplicate = true;
