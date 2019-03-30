@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.0 - 03/30/2019
+
+- Moved all calculation from phone to watch
+- Changed settings transfer to utilize files for better loading times and persistence
+- Fixed settings application requiring a recalculation of tokens, now just redraws the content
+- Added support for the Versa Lite
+- Added support for Fitbit CLI
+
 ## 1.3.2 - 07/25/2018
 
 - Added support for the Ionic
