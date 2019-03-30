@@ -24,7 +24,6 @@ function loadSettings()
   } catch (e) {    
     settings = DEFAULT_SETTINGS;
   }
- 
   applySettings();
 }
 
@@ -56,7 +55,7 @@ function processInbox() {
   while (fileName = inbox.nextFile()) {
     if (fileName === 'settings.cbor') {
       loadSettings();
-    }
+    } 
   } 
 } 
 

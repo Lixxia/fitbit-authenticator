@@ -4,6 +4,7 @@ import {settingsStorage} from "settings";
 import { AuthToken } from "./tokens.js";
 import * as cbor from 'cbor';
 import { outbox } from "file-transfer";
+import {TOKEN_SECRETS} from "../common/globals.js";
 
 let token = new AuthToken();
 let settingsCache = { };
@@ -18,12 +19,6 @@ messaging.peerSocket.onopen = () => {
 messaging.peerSocket.onclose = () => {
   console.log("Companion Socket Closed");
 };
-
-//messaging.peerSocket.onmessage = function(evt) {
-//  if (evt.data && evt.data.tokenRequest) {
-//    sendVal(token.reloadTokens(evt.data.tokenRequest));
-//  }
-//}
 
 function sendSettings() {
   console.log("settings cache being sent " + JSON.stringify(settingsCache));
@@ -53,17 +48,19 @@ settingsStorage.onchange = evt => {
 function restoreSettings() { 
   for (let index = 0; index < settingsStorage.length; index++) {
     let key = settingsStorage.key(index);
+    // If users have any data from old version, send over & delete
+    if (key && key == "token_secrets") {
+      sendVal(JSON.parse(settingsStorage.getItem(TOKEN_SECRETS)));
+      settingsStorage.removeItem(TOKEN_SECRETS);
+    }
     // Skip token_list is only names
-    if (key && key !== "token_list") {
+    else if (key && key !== "token_list") {
       var value = settingsStorage.getItem(key);
       try {
         settingsCache[key] = JSON.parse(value);
       }
       catch(ex) {
         settingsCache[key] = value;
-      //let data = {};
-      //data[key] = JSON.parse(settingsStorage.getItem(key));
-      //sendVal(data);
       }
     }  
   }
