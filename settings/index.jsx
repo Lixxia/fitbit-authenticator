@@ -1,16 +1,10 @@
-import {COLORS,FONTS} from "../common/globals.js";
+import { COLORS,FONTS,DEFAULT_SETTINGS } from "../common/globals.js";
 
 function setDefaults(props) {
-  if (!props.settings.text_toggle) {
-    props.settingsStorage.setItem('text_toggle', "false"); 
-  } else if (!props.settings.color) {
-    props.settingsStorage.setItem('color', JSON.stringify(COLORS[0].value)); 
-  } else if (!props.settings.font) {
-    props.settingsStorage.setItem('font', JSON.stringify({"selected":[0],"values":[{"name":FONTS[0].name}]}));
-  } else if (!props.settings.display_always) {
-    props.settingsStorage.setItem('display_always', "false");
-  } else if (!props.settings.groups) {
-    props.settingsStorage.setItem('groups', JSON.stringify({"selected":[1], "values":[{"name":"Two (123 456)","value":"1"}]}));
+  for (let key in DEFAULT_SETTINGS) {
+    if (!props.settings[key]) {
+      props.settingsStorage.setItem(key, JSON.stringify(DEFAULT_SETTINGS[key]));
+    }
   }
 };
 
@@ -27,8 +21,7 @@ function mySettings(props) {
             <Text align="center">Invalid formatting or tokens will result in the item being rejected.</Text>
             <Text align="center"> Items can be reordered in the settings. </Text>
             <Text bold align="center">Security Considerations</Text>
-            <Text align="center">Any secret tokens entered are stored directly on the phone. Once stored they are stripped from the displayed settings so that they are no longer viewable. If the token is still visible in the settings, reload the watch app and it should update.</Text>
-            <Text align="center">New tokens are transmitted to the watch every 30s.</Text>
+            <Text align="center">Any secret tokens entered are sent and stored on the watch. Once stored they are stripped from the displayed settings so that they are no longer viewable. If the token is still visible in the settings, reload the watch app and it should update.</Text>
             <Text align="center">If the application is uninstalled from the watch, all associated data is permanently deleted. Please consider this before using this as your only means of accessing your tokens.</Text>
           </Section>
         }>

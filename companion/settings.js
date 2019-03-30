@@ -1,5 +1,5 @@
 import {settingsStorage} from "settings";
-import {TOKEN_LIST,TOKEN_SECRETS} from "../common/globals.js";
+import {TOKEN_LIST} from "../common/globals.js";
 
 export function singleSetting(key, setting) {
   let arr = {};
@@ -35,11 +35,11 @@ export function deleteItem(oldVal,newVal) {
 }
 
 export function checkUniqueNames(newArray) {
-  var testArray = {};
-  var duplicates = [];
+  let testArray = {};
+  let duplicates = [];
 
   newArray.map(function(item) {
-    var itemName = item["name"].split(":")[0];
+    let itemName = item["name"].split(":")[0];
     if (itemName in testArray) {
       testArray[itemName].duplicate = true;
       item.duplicate = true;
@@ -61,7 +61,7 @@ export function revokeLast(item, array) {
 
 export function stripTokens() {
   // After storing the secrets, don't want any tokens visible in settings
-  let tokens = JSON.parse(settingsStorage.getItem(TOKEN_SECRETS));
+  let tokens = JSON.parse(settingsStorage.getItem(TOKEN_LIST));
   
   for (let i=0; i<tokens.length;i++) {
     delete tokens[i]["token"];
