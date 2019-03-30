@@ -15,5 +15,8 @@
         "name": "Authenticator"
       }
     }
+  },
+  "scripts": {
+    "build": "fitbit-build"
   }
 }
