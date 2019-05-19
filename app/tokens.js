@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import {FILE_NAME} from "../common/globals.js";
+import {base32ToUint8Array} from "../common/util.js";
 
 export function AuthToken() {
   try {
@@ -8,6 +9,27 @@ export function AuthToken() {
     console.error("File not found, initializing JSON.");
     this.file = {"data":[]};
   }
+  if (this.convertTokensToUint8Array()) {
+    fs.writeFileSync(FILE_NAME, this.file, "cbor");
+  }
+}
+
+// Convert any existing string/base32-encoded tokens to a Uint8Array, and wrap raw ArrayBuffer tokens
+AuthToken.prototype.convertTokensToUint8Array = function() {
+  let changed = false;
+  for (let i in this.file.data) {
+    if (typeof this.file.data[i]["token"] == "string") {
+      this.file.data[i]["token"] = base32ToUint8Array(this.file.data[i]["token"]);
+      changed = true;
+    } else if (this.file.data[i]["token"] instanceof ArrayBuffer) {
+      // Data read from a CBOR file comes back as a base ArrayBuffer, which needs to be wrapped in a Uint8Array to use.
+      // This is not a conversion that can be written to the filesystem, so we don't set `changed`.
+      this.file.data[i]["token"] = new Uint8Array(this.file.data[i]["token"]);
+    } else if (!(this.file.data[i]["token"] instanceof Uint8Array)) {
+      console.error("Unknown object found in token field: " + this.file.data[i]["token"]);
+    }
+  }
+  return changed;
 }
 
 AuthToken.prototype.reorderTokens = function(tokens) {
@@ -35,7 +57,7 @@ AuthToken.prototype.writeToken = function(tokens) {
   
   for (let j in tokens) {
     if (tokens[j].hasOwnProperty('token')) {
-      this.file.data.push({"name":tokens[j]["name"],"token":tokens[j]["token"]});
+      this.file.data.push({"name":tokens[j]["name"],"token":base32ToUint8Array(tokens[j]["token"])});
     }
   }
   fs.writeFileSync(FILE_NAME, this.file, "cbor");
