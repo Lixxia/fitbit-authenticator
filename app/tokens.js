@@ -26,9 +26,10 @@ AuthToken.prototype.reorderTokens = function(tokens) {
   for (let name of newOrder) {
     newTokens.data.push(this.file.data[fileOrder.indexOf(name)]);
   }
-  fs.writeFileSync(FILE_NAME, newTokens, "cbor");
-  return newTokens;
-}  
+  this.file = newTokens;
+  fs.writeFileSync(FILE_NAME, this.file, "cbor");
+  return this.file;
+}
 
 AuthToken.prototype.writeToken = function(tokens) {
   tokens = JSON.parse(JSON.stringify(tokens)); //hasOwnProperty does not function correctly without this re-parse
