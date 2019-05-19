@@ -43,9 +43,9 @@ AuthToken.prototype.writeToken = function(tokens) {
   return this.file;
 }
 
-AuthToken.prototype.deleteToken = function(token) {
+AuthToken.prototype.deleteToken = function(tokenNames) {
   for (let i in this.file.data) {
-    if(this.file.data[i]["name"] === token) {
+    if(tokenNames.indexOf(this.file.data[i]["name"]) != -1) {
       this.file.data.splice(i, 1);
     }
   }

@@ -31,7 +31,7 @@ export function deleteItem(oldVal,newVal) {
       return newNames.indexOf(i) < 0;
     });
   }
-  return deleteArr;
+  return {"delete": deleteArr};
 }
 
 export function checkUniqueNames(newArray) {
