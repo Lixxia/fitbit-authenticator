@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.1 - 08/04/2019
+
+- Thanks to [@nhinds](https://github.com/nhinds) for both fixes!
+- Fixed bug that caused a token reorder to revert after token regeneration
+- Fixed bug where deleting tokens wouldn't reflect on the watch until tokens were reordered 
+
 ## 1.4.0 - 03/30/2019
 
 - Moved all calculation from phone to watch
