@@ -3,7 +3,11 @@
 */
 
 // A variable 'window' is required to get access to the sha1 object
-var window = {};
+var window = {
+  // These 2 settings are required to make the companion app work in the simulator
+  JS_SHA1_NO_NODE_JS: true,
+  JS_SHA1_NO_COMMON_JS: true,
+};
 
 /*
  * [js-sha1]{@link https://github.com/emn178/js-sha1}
