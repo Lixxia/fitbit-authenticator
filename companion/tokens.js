@@ -1,5 +1,6 @@
 import {TOKEN_LIST} from "../common/globals.js";
 import {TOTP} from "../common/totp.js";
+import {base32ToUint8Array} from "../common/util.js";
 import {settingsStorage} from "settings";
 import * as settings from "./settings.js";
 
@@ -60,7 +61,7 @@ AuthToken.prototype.validateToken = function(token) {
   if (token.length < 16) return false; // Too short
   
   try {
-    this.totpObj.getOTP(token);
+    this.totpObj.getOTP(base32ToUint8Array(token));
   } catch (e) {
     console.error("Token was invalid, following error given: " + e);
     return false;
