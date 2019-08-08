@@ -29,7 +29,7 @@ For a list of all changes please click [here](CHANGELOG.md).
 
 # References
 
-- jsSHA library used from [jsSHA](http://caligatio.github.com/jsSHA/)
+- jsSHA-1 library used from [js-sha1](https://github.com/emn178/js-sha1)
 - TOTP generation code adapted from [this blogpost](http://blog.tinisles.com/2011/10/google-authenticator-one-time-password-algorithm-in-javascript/)
 - Fitbit example project [sdk-bart](https://github.com/Fitbit/sdk-bart)
 - Settings file transfer code from [fitbit-file-transfer-settings](https://github.com/KiezelPay/fitbit-file-transfer-settings)

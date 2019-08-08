@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.2 - 08/07/2019
+
+- Improvements to initial launch time and code regeneration time contributed by [@nhinds](https://github.com/nhinds). [PR#13](https://github.com/Lixxia/fitbit-authenticator/pull/13)
+
 ## 1.4.1 - 08/04/2019
 
 - Thanks to [@nhinds](https://github.com/nhinds) for both fixes!
